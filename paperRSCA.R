@@ -89,5 +89,21 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
 final_comLoading$Tmatrix
 
 ################ SECTION 3.2 ################################################
+# 1. DISCO-SCA
 results_disco <- DISCOsca(DATA = psych_data, R = 3, Jk = num_var)
 results_disco$comdist
+
+# 2. cv_structuredSCA()
+targetmatrix <- matrix(c(1,1,0,1,1,0), nrow = 2, ncol = 3)
+targetmatrix	
+
+maxLGlasso(DATA = psych_data, num_var, R = 3)$Lasso
+
+set.seed(110)
+results_cvS <- cv_structuredSCA(DATA = psych_data, Jk = num_var, R = 3, 
+                                Target = targetmatrix,
+                                NRSTARTS = 5, 
+                                LassoSequence = seq(from = 0.0000001, 
+                                to = 6.41176, 
+                                length.out = 200))
+results_cvS$plot
