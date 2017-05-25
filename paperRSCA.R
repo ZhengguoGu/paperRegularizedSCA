@@ -14,6 +14,8 @@
 ### 0. install package
 devtools::install_github("ZhengguoGu/RSCA")
 
+############### SECTION 3.1 ##################################
+
 ### 1. load the data in RSCA
 library(RSCA)
 attach(MezzichSolomon)
@@ -54,3 +56,38 @@ final_results$Pmatrix
 final_comLoading <- undoShrinkage(psych_data, R = 3, 
                                   Phat = final_results$Pmatrix)
 final_comLoading$Pmatrix
+
+### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
+# We draw a heatmap 
+Pmat <- final_comLoading$Pmatrix
+rownames(Pmat) <- c(paste("D:", colnames(depressed_data)), paste("S:", colnames(schizophrenic_data)))
+keepname <- rownames(Pmat)
+colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3')
+write.csv(Pmat, file='sparseresults.csv')
+
+library(ggplot2)
+names <- rownames(Pmat)
+component <- colnames(Pmat)
+PmatVec <- c(Pmat)
+names <- rep(names, 3)
+component <- rep(component, each = 34)
+
+# note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
+# which is a website for drawing heatmap using ggplot2. 
+Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = ordered(names, labels = keepname), Components = component)
+
+p <- ggplot(Pmat_dataframe, aes(x = Components, y = Variables) )+
+  geom_tile(aes(fill = Loadings), colour = "white") +
+  scale_fill_gradient2(low="green", mid = "black", high = "red") 
+
+base_size <- 9
+p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+
+### 6. The T matrix 
+final_comLoading$Tmatrix
+
+################ SECTION 3.2 ################################################
+results_disco <- DISCOsca(DATA = psych_data, R = 3, Jk = num_var)
+results_disco$comdist
