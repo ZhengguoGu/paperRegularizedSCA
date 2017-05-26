@@ -94,7 +94,7 @@ results_disco <- DISCOsca(DATA = psych_data, R = 3, Jk = num_var)
 results_disco$comdist
 
 # 2. cv_structuredSCA()
-targetmatrix <- matrix(c(1,1,0,1,1,0), nrow = 2, ncol = 3)
+targetmatrix <- matrix(c(1,1,1,1,0,1), nrow = 2, ncol = 3)
 targetmatrix	
 
 maxLGlasso(DATA = psych_data, num_var, R = 3)$Lasso
@@ -102,8 +102,49 @@ maxLGlasso(DATA = psych_data, num_var, R = 3)$Lasso
 set.seed(110)
 results_cvS <- cv_structuredSCA(DATA = psych_data, Jk = num_var, R = 3, 
                                 Target = targetmatrix,
+                                Position = c(1, 2, 3),
                                 NRSTARTS = 5, 
                                 LassoSequence = seq(from = 0.0000001, 
                                 to = 6.41176, 
                                 length.out = 200))
 results_cvS$plot
+results_cvS$LassoRegion
+results_cvS$RecommendedLasso
+
+set.seed(110)
+result_str <- structuredSCA(DATA = psych_data, Jk = num_var, R = 3,
+                            Target = targetmatrix,
+                            Position = c(1, 2, 3), 
+                            LASSO = 1.498225)
+
+final_comLoadingS <- undoShrinkage(DATA = psych_data, R = 3, 
+                                   Phat = result_str$Pmatrix)
+final_comLoadingS$Pmatrix
+
+### again, we draw a healmap
+Pmat <- final_comLoadingS$Pmatrix
+
+rownames(Pmat) <- c(paste("D:", colnames(depressed_data)), paste("S:", colnames(schizophrenic_data)))
+keepname <- rownames(Pmat)
+colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3')
+write.csv(Pmat, file='sparseresultsStr.csv')
+
+library(ggplot2)
+names <- rownames(Pmat)
+component <- colnames(Pmat)
+PmatVec <- c(Pmat)
+names <- rep(names, 3)
+component <- rep(component, each = 34)
+
+# note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
+# which is a website for drawing heatmap using ggplot2. 
+Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = ordered(names, labels = keepname), Components = component)
+
+p <- ggplot(Pmat_dataframe, aes(x = Components, y = Variables) )+
+  geom_tile(aes(fill = Loadings), colour = "white") +
+  scale_fill_gradient2(low="green", mid = "black", high = "red") 
+
+base_size <- 9
+p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
