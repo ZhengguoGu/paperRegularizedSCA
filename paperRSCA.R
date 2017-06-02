@@ -22,8 +22,8 @@ attach(MezzichSolomon)
 names(MezzichSolomon)
 
 ### 2. pre-process the data
-depressed_data <- mySTD(MezzichSolomon$depressed)
-schizophrenic_data <- mySTD(MezzichSolomon$schizophrenic)
+depressed_data <- mySTD(MezzichSolomon$depr_manicdepre)
+schizophrenic_data <- mySTD(MezzichSolomon$simpleschizo)
 psych_data <- cbind(depressed_data, schizophrenic_data)
 num_var <- cbind(dim(depressed_data)[2], dim(schizophrenic_data)[2])
 
