@@ -35,7 +35,7 @@ discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
 discoresult$comdist
 
 ### 4. cross-validation RSCA
-set.seed(110)
+set.seed(111)
 results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
 results_cv$plot[[1]]
 
@@ -97,7 +97,7 @@ targetmatrix
 
 maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
 
-set.seed(110)
+set.seed(115)
 results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4, 
                                 Target = targetmatrix,
                                 Position = c(1, 2, 3, 4),
@@ -112,7 +112,7 @@ set.seed(115)
 result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
                             Position = c(1, 2, 3, 4), 
-                            LASSO = 0.9244748)
+                            LASSO = 0.881476)
 
 final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
                                    Phat = result_str$Pmatrix)
@@ -143,3 +143,4 @@ base_size <- 9
 p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
+
