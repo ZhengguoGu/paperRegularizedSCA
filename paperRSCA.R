@@ -18,23 +18,25 @@ devtools::install_github("ZhengguoGu/RSCA")
 
 ### 1. load the data in RSCA
 library(RSCA)
-attach(MezzichSolomon)
-names(MezzichSolomon)
+names(Herring)
 
 ### 2. pre-process the data
-depressed_data <- mySTD(MezzichSolomon$depr_manicdepre)
-schizophrenic_data <- mySTD(MezzichSolomon$simpleschizo)
-psych_data <- cbind(depressed_data, schizophrenic_data)
-num_var <- cbind(dim(depressed_data)[2], dim(schizophrenic_data)[2])
+ChemPhy <- mySTD(Herring$Herring_ChemPhy)
+Sensory <- mySTD(Herring$Herring_Sensory)
+herring_data <- cbind(ChemPhy, Sensory)
+num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
 
-### 3. VAF and PCA-GCA
-VAF(psych_data, num_var, R = 5)
+### 3. VAF, PCA-GCA, and DISCO-SCA
+VAF(DATA = herring_data, Jk = num_var, R = 10)
 
-pca_gca(psych_data, num_var, cor_min = 0.8)
+pca_gca(DATA = herring_data, Jk = num_var)
+
+discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
+discoresult$comdist
 
 ### 4. cross-validation RSCA
 set.seed(110)
-results_cv <- cv_sparseSCA(DATA = psych_data, Jk = num_var, R = 3, NRSTARTS = 2)
+results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
 results_cv$plot[[1]]
 
 results_cv$Glasso_values
@@ -45,40 +47,39 @@ results_cv$plot[[2]]
 results_cv$RecommendedLambda
 
 # the final model
-set.seed(110)
-final_results <- sparseSCA(psych_data, num_var, R = 3, 
-                           LASSO = 0.7584501, 
-                           GROUPLASSO = 0.7674313, 
+set.seed(111)
+final_results <- sparseSCA(herring_data, num_var, R = 4, 
+                           LASSO = 0.5281094, 
+                           GROUPLASSO = 1.028915, 
                            NRSTART = 20)
 final_results$Pmatrix
 
 # undo the shrinkage
-final_comLoading <- undoShrinkage(psych_data, R = 3, 
+final_comLoading <- undoShrinkage(herring_data, R = 4, 
                                   Phat = final_results$Pmatrix)
 final_comLoading$Pmatrix
 
 ### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
 # We draw a heatmap 
 Pmat <- final_comLoading$Pmatrix
-rownames(Pmat) <- c(paste("D:", colnames(depressed_data)), paste("S:", colnames(schizophrenic_data)))
 keepname <- rownames(Pmat)
-colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3')
+colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
 write.csv(Pmat, file='sparseresults.csv')
 
 library(ggplot2)
 names <- rownames(Pmat)
 component <- colnames(Pmat)
 PmatVec <- c(Pmat)
-names <- rep(names, 3)
-component <- rep(component, each = 34)
+names <- rep(names, 4)
+component <- rep(component, each = 20)
 
 # note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
 # which is a website for drawing heatmap using ggplot2. 
-Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = ordered(names, labels = keepname), Components = component)
+Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = factor(names, ordered = T, levels = keepname), Components = component)
 
 p <- ggplot(Pmat_dataframe, aes(x = Components, y = Variables) )+
-  geom_tile(aes(fill = Loadings), colour = "white") +
-  scale_fill_gradient2(low="green", mid = "black", high = "red") 
+     geom_tile(aes(fill = Loadings), colour = "white") +
+     scale_fill_gradient2(low="green", mid = "black", high = "red") 
 
 base_size <- 9
 p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
@@ -89,58 +90,52 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
 final_comLoading$Tmatrix
 
 ################ SECTION 3.2 ################################################
-# 1. DISCO-SCA
-results_disco <- DISCOsca(DATA = psych_data, R = 3, Jk = num_var)
-results_disco$comdist
 
-# 2. cv_structuredSCA()
-targetmatrix <- matrix(c(1,1,1,1,0,1), nrow = 2, ncol = 3)
+# 1. cv_structuredSCA()
+targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
 targetmatrix	
 
-maxLGlasso(DATA = psych_data, num_var, R = 3)$Lasso
+maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
 
 set.seed(110)
-results_cvS <- cv_structuredSCA(DATA = psych_data, Jk = num_var, R = 3, 
+results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4, 
                                 Target = targetmatrix,
-                                Position = c(1, 2, 3),
-                                NRSTARTS = 5, 
+                                Position = c(1, 2, 3, 4),
                                 LassoSequence = seq(from = 0.0000001, 
-                                to = 6.41176, 
-                                length.out = 200))
+                                                    to = 4.278383, 
+                                                    length.out = 200))
 results_cvS$plot
 results_cvS$LassoRegion
 results_cvS$RecommendedLasso
 
-set.seed(110)
-result_str <- structuredSCA(DATA = psych_data, Jk = num_var, R = 3,
+set.seed(115)
+result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
-                            Position = c(1, 2, 3), 
-                            LASSO = 1.498225)
+                            Position = c(1, 2, 3, 4), 
+                            LASSO = 0.9244748)
 
-final_comLoadingS <- undoShrinkage(DATA = psych_data, R = 3, 
+final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
                                    Phat = result_str$Pmatrix)
 final_comLoadingS$Pmatrix
 
 ### again, we draw a healmap
-Pmat <- final_comLoadingS$Pmatrix
-
-rownames(Pmat) <- c(paste("D:", colnames(depressed_data)), paste("S:", colnames(schizophrenic_data)))
-keepname <- rownames(Pmat)
-colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3')
-write.csv(Pmat, file='sparseresultsStr.csv')
+PmatS <- final_comLoadingS$Pmatrix
+keepname <- rownames(PmatS)
+colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
+write.csv(PmatS, file='sparseresultsStr.csv')
 
 library(ggplot2)
-names <- rownames(Pmat)
-component <- colnames(Pmat)
-PmatVec <- c(Pmat)
-names <- rep(names, 3)
-component <- rep(component, each = 34)
+names <- rownames(PmatS)
+component <- colnames(PmatS)
+PmatSVec <- c(PmatS)
+names <- rep(names, 4)
+component <- rep(component, each = 20)
 
 # note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
 # which is a website for drawing heatmap using ggplot2. 
-Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = ordered(names, labels = keepname), Components = component)
+PmatS_dataframe <- data.frame(Loadings = PmatSVec, Variables = factor(names, ordered = T, levels = keepname), Components = component)
 
-p <- ggplot(Pmat_dataframe, aes(x = Components, y = Variables) )+
+p <- ggplot(PmatS_dataframe, aes(x = Components, y = Variables) )+
   geom_tile(aes(fill = Loadings), colour = "white") +
   scale_fill_gradient2(low="green", mid = "black", high = "red") 
 
