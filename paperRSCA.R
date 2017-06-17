@@ -7,7 +7,8 @@
 #  Zhengguo Gu, Katrijn Van Deun
 #  Department of Methodology and Statistics
 #  Tilburg University
-#  email: zhengguo.gu@uvt.nl
+#  email: z.gu@uvt.nl (Zhengguo)
+#         K.VanDeun@uvt.nl (Katrijn)
 #
 #############################################################
 
