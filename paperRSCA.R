@@ -56,9 +56,9 @@ final_results <- sparseSCA(herring_data, num_var, R = 4,
 final_results$Pmatrix
 
 # undo the shrinkage
-final_comLoading <- undoShrinkage(herring_data, R = 4, 
+final_Loading <- undoShrinkage(herring_data, R = 4, 
                                   Phat = final_results$Pmatrix)
-final_comLoading$Pmatrix
+final_Loading$Pmatrix
 
 ### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
 # We draw a heatmap 
