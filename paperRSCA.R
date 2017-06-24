@@ -18,7 +18,7 @@ devtools::install_github("ZhengguoGu/RSCA")
 ############### SECTION 3.1 ##################################
 
 ### 1. load the data in RSCA
-library(RSCA)
+library(RegularizedSCA)
 names(Herring)
 
 ### 2. pre-process the data
