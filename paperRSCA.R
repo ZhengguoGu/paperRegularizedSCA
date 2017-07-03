@@ -1,7 +1,7 @@
 ############################################################
 #
 #  R code for the software paper: 
-#  RSCA: Regularized Simultaneous Component Analysis for
+#  RegularizedSCA: Regularized Simultaneous Component Analysis for
 #  Data Integration in R
 #
 #  Zhengguo Gu, Katrijn Van Deun
@@ -10,15 +10,17 @@
 #  email: z.gu@uvt.nl (Zhengguo)
 #         K.VanDeun@uvt.nl (Katrijn)
 #
+#
+#  NOTE: This R code was run on R version 3.3.0 on windows
 #############################################################
 
 ### 0. install package
-devtools::install_github("ZhengguoGu/RSCA")
+install.packages("RegularizedSCA")
 
 ############### SECTION 3.1 ##################################
 
 ### 1. load the data in RSCA
-library(RegularizedSCA)
+library("RegularizedSCA")
 names(Herring)
 
 ### 2. pre-process the data
