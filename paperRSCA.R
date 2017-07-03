@@ -26,13 +26,22 @@ names(Herring)
 ### 2. pre-process the data
 ChemPhy <- mySTD(Herring$Herring_ChemPhy)
 Sensory <- mySTD(Herring$Herring_Sensory)
-herring_data <- c(ChemPhy, Sensory)
-num_var <- c(dim(ChemPhy)[2], dim(Sensory)[2])
+herring_data <- cbind(ChemPhy, Sensory)
+num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
 
 ### 3. VAF, PCA-GCA, and DISCO-SCA
 VAF(DATA = herring_data, Jk = num_var, R = 10)
 
-pca_gca(DATA = herring_data, Jk = num_var)
+pca_gca(DATA = herring_data, Jk = num_var) 
+       #note: pca_gca() contains a user-computer interaction phase, once
+       #we run pca_gca(DATA = herring_data, Jk = num_var), the console will 
+       #display the eigenvalues of block 1 and ask whether the user wants to 
+       #see the scree plot. If yes, then the user must enter 1; if No, enter 0.
+       #Then the program will also ask how many components to retain for this block
+       #and the user must give a number. 
+       #The aforementioned procedure will be repeated from the first block till the 
+       #last block.
+
 
 discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
 discoresult$comdist
@@ -64,7 +73,7 @@ final_Loading$Pmatrix
 
 ### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
 # We draw a heatmap 
-Pmat <- final_comLoading$Pmatrix
+Pmat <- final_Loading$Pmatrix
 keepname <- rownames(Pmat)
 colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
 write.csv(Pmat, file='sparseresults.csv')
@@ -90,7 +99,7 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_y_discrete(expand = c(0, 0))
 
 ### 6. The T matrix 
-final_comLoading$Tmatrix
+final_Loading$Tmatrix
 
 ################ SECTION 3.2 ################################################
 
@@ -108,6 +117,7 @@ results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                                                     to = 4.278383, 
                                                     length.out = 200))
 results_cvS$plot
+
 results_cvS$LassoRegion
 results_cvS$RecommendedLasso
 
