@@ -24,8 +24,8 @@ names(Herring)
 ### 2. pre-process the data
 ChemPhy <- mySTD(Herring$Herring_ChemPhy)
 Sensory <- mySTD(Herring$Herring_Sensory)
-herring_data <- cbind(ChemPhy, Sensory)
-num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
+herring_data <- c(ChemPhy, Sensory)
+num_var <- c(dim(ChemPhy)[2], dim(Sensory)[2])
 
 ### 3. VAF, PCA-GCA, and DISCO-SCA
 VAF(DATA = herring_data, Jk = num_var, R = 10)
