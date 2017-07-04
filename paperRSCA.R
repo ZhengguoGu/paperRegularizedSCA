@@ -12,6 +12,7 @@
 #
 #
 #  NOTE: This R code was run on R version 3.3.0 on windows
+#        Latest update: July 4, 2017
 #############################################################
 
 ### 0. install package
@@ -19,7 +20,7 @@ install.packages("RegularizedSCA")
 
 ############### SECTION 3.1 ##################################
 
-### 1. load the data in RSCA
+### 1. load the package and data
 library("RegularizedSCA")
 names(Herring)
 
@@ -46,7 +47,7 @@ pca_gca(DATA = herring_data, Jk = num_var)
 discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
 discoresult$comdist
 
-### 4. cross-validation RSCA
+### 4. cross-validation 
 set.seed(111)
 results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
 results_cv$plot[[1]]
@@ -131,7 +132,7 @@ final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4,
                                    Phat = result_str$Pmatrix)
 final_comLoadingS$Pmatrix
 
-### again, we draw a healmap
+### again, we draw a heatmap
 PmatS <- final_comLoadingS$Pmatrix
 keepname <- rownames(PmatS)
 colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
