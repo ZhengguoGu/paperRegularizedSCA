@@ -1,6 +1,7 @@
 ############################################################
-#
-#  R code for the software paper: 
+#  !!! Please run on windows
+#  
+#  R script for the software paper: 
 #  RegularizedSCA: Regularized Simultaneous Component Analysis for
 #  Data Integration in R
 #
@@ -11,7 +12,7 @@
 #         K.VanDeun@uvt.nl (Katrijn)
 #
 #
-#  NOTE: This R code was run on R version 3.3.0 on windows
+#  NOTE: This R script was run on R version 3.3.0 on windows
 #        Latest update: July 4, 2017
 #############################################################
 
