@@ -1,5 +1,5 @@
 ############################################################
-#  !!! Please run on windows
+#  !!! The results should be reproduced on Windows
 #  
 #  R script for the software paper: 
 #  RegularizedSCA: Regularized Simultaneous Component Analysis for
