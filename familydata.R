@@ -93,4 +93,7 @@ summary(DS4_NEW)
 # because "family hassels" in DS3_NEW contains too much NA values, better remove this column
 DS3_NEW <- DS3_NEW[, -8]
 # remove NAs
-DS3_NEW <- DS3_NEW[-which(is.na(data.matrix(DS3_NEW)))]
+DS3_NEW <- data.matrix(DS3_NEW)
+DS3_NEW <- DS3_NEW[-which(is.nan(DS3_NEW))]
+which(is.nan(DS3_NEW[1,]))
+str(data.matrix(DS3_NEW))
