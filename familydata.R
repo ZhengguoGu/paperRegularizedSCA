@@ -22,6 +22,12 @@ sim_impu <- function(DATA, M_values){
 #This is the script for obtaining the data 
 DS3 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" )
 DS4 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" )
+
+DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+
+DS3 <- data.matrix(DS3)
+DS4 <- data.matrix(DS4)
 # DS3 data, we are going to use the following quetionnaires DS3[, c(352:371, 379:404, 441:460, 540:553, 555:568)]
 # some of the questions need to change direction(reverse coding)
 
@@ -65,8 +71,8 @@ colnames(DS3_NEW)[4:12] <- c("Relationship with partners", "Argue with partners"
 DS4[, c(176:183)] <- sim_impu(DS4[, c(176:183)], 9)
 DS4[, 176] <- 3 - DS4[, 176]  #recoding, answer category 0~3
 
-DS4[which(DS4[, 304] == 99)] <- NA #academic performance
-DS4[which(DS4[, 304] == 9)] <- NA
+DS4[which(DS4[, 304] == 99), 304]<- NA #academic performance
+DS4[which(DS4[, 304] == 9), 304] <- NA
 
 DS4[, c(326:342)] <- sim_impu(DS4[, c(326:342)], 9)
 DS4[, c(359:367)] <- sim_impu(DS4[, c(359:367)], 9)
