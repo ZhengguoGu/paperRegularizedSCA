@@ -18,12 +18,12 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-
+install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
 ############### SECTION 3.1 ##################################
 
 ### 1. load the package and data
 library("RegularizedSCA")
-names(Herring)
+names(Herring)  #one can check the names of the data file "Herring" 
 
 ### 2. pre-process the data
 ChemPhy <- mySTD(Herring$Herring_ChemPhy)
@@ -32,7 +32,8 @@ herring_data <- cbind(ChemPhy, Sensory)
 num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
 
 ### 3. VAF, PCA-GCA, and DISCO-SCA
-VAF(DATA = herring_data, Jk = num_var, R = 10)
+vaf <- VAF(DATA = herring_data, Jk = num_var, R = 10)
+summary(vaf)
 
 pca_gca(DATA = herring_data, Jk = num_var) 
        #note: pca_gca() contains a user-computer interaction phase, once
@@ -46,19 +47,17 @@ pca_gca(DATA = herring_data, Jk = num_var)
 
 
 discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
-discoresult$comdist
+summary(discoresult)
 
 ### 4. cross-validation 
 set.seed(111)
 results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
-results_cv$plot[[1]]
+plot(results_cv)
 
-results_cv$Glasso_values
 results_cv$Lasso_values
-
-results_cv$plot[[2]] 
-
-results_cv$RecommendedLambda
+results_cv$GLasso_values
+summary(results_cv, disp = "full")
+summary(results_cv)  #to check the recommended tuning parameter values
 
 # the final model
 set.seed(111)
@@ -66,12 +65,14 @@ final_results <- sparseSCA(herring_data, num_var, R = 4,
                            LASSO = 0.5281094, 
                            GROUPLASSO = 1.028915, 
                            NRSTART = 20)
-final_results$Pmatrix
+summary(final_results, disp = "full") 
 
 # undo the shrinkage
 final_Loading <- undoShrinkage(herring_data, R = 4, 
                                   Phat = final_results$Pmatrix)
-final_Loading$Pmatrix
+
+summary(final_Loading)
+
 
 ### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
 # We draw a heatmap 
@@ -100,7 +101,7 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
 
-### 6. The T matrix 
+### 6. The T matrix or one can check summary(final_Loading) for T matrix
 final_Loading$Tmatrix
 
 ################ SECTION 3.2 ################################################
@@ -118,10 +119,9 @@ results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                                 LassoSequence = seq(from = 0.0000001, 
                                                     to = 4.278383, 
                                                     length.out = 200))
-results_cvS$plot
+plot(results_cvS)
 
-results_cvS$LassoRegion
-results_cvS$RecommendedLasso
+summary(results_cvS)
 
 set.seed(115)
 result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
@@ -131,7 +131,7 @@ result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
 
 final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
                                    Phat = result_str$Pmatrix)
-final_comLoadingS$Pmatrix
+summary(final_comLoadingS)
 
 ### again, we draw a heatmap
 PmatS <- final_comLoadingS$Pmatrix
