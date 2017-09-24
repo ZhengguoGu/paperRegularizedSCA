@@ -121,7 +121,8 @@ results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                                                     length.out = 200))
 plot(results_cvS)
 
-summary(results_cvS)
+results_cvS$LassoRegion  #to see the proper region 
+summary(results_cvS)     #to see the recommended value
 
 set.seed(115)
 result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
