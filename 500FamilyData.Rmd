@@ -41,4 +41,7 @@ DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simult
 DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
 ```
 
-
+```{r}
+# regarding "Please tell us how much you agree with each of the following statements about your relationship with your spouse/partner
+summary(DS3[, c(352:367)])
+````
