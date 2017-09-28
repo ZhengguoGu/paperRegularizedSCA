@@ -1,0 +1,44 @@
+---
+title: "The 500 Family Study data"
+output: html_notebook
+---
+The original raw data -- "500 Family Study" data -- is publicly available at http://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/4549?searchSource=revise&q=500+family+study. To obtain the data used in this article, follow the following steps:
+
+# Step 1. Download data
+Download the DS3 and DS4 raw data (SPSS format) from the website. Use SPSS software to save the raw data as comma separated values file. 
+
+# Step 2. Process data
+
+## A function for replacing missing values in the raw data with NA
+```{r}
+sim_impu <- function(DATA, M_values){
+  # M_values: missing values in the raw data. Some missing values are coded as 9, some are coded as 999 etc. 
+  nrow <- dim(DATA)[1]
+  ncol <- dim(DATA)[2]
+  DATA <- data.matrix(DATA)
+  
+  for(i in 1:length(M_values)){
+    DATA[which(DATA == M_values[i])] <- NA
+  }
+  
+  for(n in 1:nrow){
+    for(m in 1:ncol){
+      if(is.na(DATA[n, m])){
+          DATA[n, m] <- mean(DATA[n, ], na.rm = T)
+      }
+    }
+  }
+
+ return(DATA)
+}
+```
+
+```{r}
+DS3 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" )
+DS4 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" )
+
+DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+```
+
+
