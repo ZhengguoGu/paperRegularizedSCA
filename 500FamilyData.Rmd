@@ -1,6 +1,10 @@
 ---
 title: "The 500 Family Study data"
-output: html_notebook
+author: Zhengguo Gu
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
 ---
 The original raw data -- "500 Family Study" data -- is publicly available at http://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/4549?searchSource=revise&q=500+family+study. To obtain the data used in this article, follow the following steps:
 
@@ -16,10 +20,8 @@ sim_impu <- function(DATA, M_values, repl){
   # M_values: missing values in the raw data. Some missing values are coded as 9, some are coded as 999 etc. 
   # repl = T, missing values are replaced with mean. 
   
-  if(is.missing(repl)){
+  if(missing(repl)){
     repl = F
-  }else{
-    repl = T
   }
   
   nrow <- dim(DATA)[1]
@@ -46,15 +48,91 @@ sim_impu <- function(DATA, M_values, repl){
 }
 ```
 
+## Load raw data
+
 ```{r}
-DS3 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" )
-DS4 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" )
+#DS3 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" )
+#DS4 = read.csv("D:/TilburgOffice/Dropbox/tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" )
 
 DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
 DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
 ```
 
+## Process DS3 data
+### Questionnaire #74: Please tell us how much agree with each of the following statements about your relationship with your spouse/parter.
+
+Example question: 
+74a. My partner and I understand each other perfectly. (strongly disagree to strongly agree). 
+
+
+The following questions in this questionnaire are to be reverse coded:
+
+
++ b
++ e
++ h
++ i
++ l
++ n
+
 ```{r}
-# regarding "Please tell us how much you agree with each of the following statements about your relationship with your spouse/partner
+DS3[, c(352:367)] <- sim_impu(DS3[, c(352:367)], 9)
+DS3[, c(353, 356, 359, 360, 363, 365)] <- 6 - DS3[, c(353, 356, 359, 360, 363, 365)] #reverse coding
+
+DS3[, c(352:367)] <- sim_impu(DS3[, c(352:367)], 9, repl = T) #NA replaced with mean
 summary(DS3[, c(352:367)])
-````
+```
+Note: 96 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+After reverse coding, **the higher a score, the happier/more satisfied a person in his/her relationship**.
+
+### Questionnaire #75: There are various ways that couples deal with serious disagreements. When you have a serious disagreement with your spouse/partner, how often do you...
+
+Example question:
+75a. Just keep your opinions to yourself (Never to very often).
+
+
+The following question is to be reverse coded:
+
++ c
++ d
+
+```{r}
+DS3[, c(368:371)] <- sim_impu(DS3[, c(368:371)], 9)
+DS3[, c(370, 371)] <- 6 - DS3[, c(370, 371)] #so the higher the value the calmer.
+DS3[, c(368:371)] <- sim_impu(DS3[, c(368:371)], 9, repl = T)
+summary(DS3[, c(368:371)])
+```
+Note: 96 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+After reverse coding, **the higher a score, the less violent during a disagreement with the spouse/partner**.
+
+### Questionnaire #80: What do you think the chances are that the child participating in the study will..
+
+Example question: 
+a. Graduate from high school (very low to very high).
+
+```{r}
+DS3[, c(379:386)] <- sim_impu(DS3[, c(379:386)], c(9, -8), repl = T)
+summary(DS3[, c(379:386)])
+```
+Note: 31 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed. **The higher the score, the stronger the parent feels that the child has a bright future/happy life**.
+
+### Questionnaire #81: How often do you and the child in the study participate in the following activities together:
+
+Example question: 
+a. Talking about everyday events in your lives.
+
+```{r}
+DS3[, c(387:404)] <- sim_impu(DS3[, c(387:404)], c(9, -8), repl = T)
+summary(DS3[, c(387:404)])
+```
+Note: 33 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed. **The higher the score, the more often the parent does activities together with the child**.
+
+### Questionnaire #85: The statements below describe lots of events that routinely occur in families with young children. These events sometimes make life diffcult. Please read each item and circle how much of a 'hassle' you feel this is for you. If you have more than one child, these events can include any or all of your children. 
+
+Example question: a. Continually clearning up messess of toys or food. 
