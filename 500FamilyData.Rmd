@@ -10,9 +10,18 @@ Download the DS3 and DS4 raw data (SPSS format) from the website. Use SPSS softw
 # Step 2. Process data
 
 ## A function for replacing missing values in the raw data with NA
+We first write a simple function for dealing with the coding missing value in the raw data. All missing values are replaced with the mean
 ```{r}
-sim_impu <- function(DATA, M_values){
+sim_impu <- function(DATA, M_values, repl){
   # M_values: missing values in the raw data. Some missing values are coded as 9, some are coded as 999 etc. 
+  # repl = T, missing values are replaced with mean. 
+  
+  if(is.missing(repl)){
+    repl = F
+  }else{
+    repl = T
+  }
+  
   nrow <- dim(DATA)[1]
   ncol <- dim(DATA)[2]
   DATA <- data.matrix(DATA)
@@ -21,13 +30,17 @@ sim_impu <- function(DATA, M_values){
     DATA[which(DATA == M_values[i])] <- NA
   }
   
-  for(n in 1:nrow){
+  if(repl == T){
+    
+    for(n in 1:nrow){
     for(m in 1:ncol){
       if(is.na(DATA[n, m])){
           DATA[n, m] <- mean(DATA[n, ], na.rm = T)
       }
     }
+   }
   }
+  
 
  return(DATA)
 }
