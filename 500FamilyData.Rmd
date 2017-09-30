@@ -136,3 +136,43 @@ No reverse coding needed. **The higher the score, the more often the parent does
 ### Questionnaire #85: The statements below describe lots of events that routinely occur in families with young children. These events sometimes make life diffcult. Please read each item and circle how much of a 'hassle' you feel this is for you. If you have more than one child, these events can include any or all of your children. 
 
 Example question: a. Continually clearning up messess of toys or food. 
+
+```{r}
+DS3[, c(441:460)] <- sim_impu(DS3[, c(441:460)], c(9, -8), repl = T)
+summary(DS3[, c(441:460)])
+```
+Note: 565 rows in the data matrix above contain NaN vectors, that is, the entire row is NA. We should consider remove this questionnaire. 
+
+No reverse coding needed. 
+
+### Questionnaire #87: Now we're going to present a few more statements about parenting. How true do you feel each of the following statements is in your life?
+
+Example question: a. Being a parent is harder than I thought it would be. (Never true to always true)
+
+```{r}
+DS3[, c(540:543)] <- sim_impu(DS3[, c(540:543)], 9, repl = T)
+summary(DS3[, c(540:543)])
+```
+Note: 30 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed. **The higher the score, the more negative feeling about parenting**. 
+
+### Questionnaire #88: In general, I am a parent who...
+
+Example question: a. Makes my children feel better when they talk over their worries with me... (Never true to always true)
+
+```{r}
+DS3[, c(544:549)] <- sim_impu(DS3[, c(544:549)], 9, repl = T)
+summary(DS3[, c(544:549)])
+```
+Note: 30 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed. **The higher the score, the more the parent cheers the child up**.
+
+### Questionnaire #89: When you and one of your children have had a disagreement, how often have you...
+
+Example question: a. Just kept your opinion to your self (Never to Very often)
+
+```{r}
+DS3[, c(550:553)] <- sim_impu(DS3[, c(550:553)], 9)
+```
