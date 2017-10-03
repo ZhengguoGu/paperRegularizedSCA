@@ -408,6 +408,117 @@ summary(DS3[, c(544:549)])</code></pre>
 <p>Note: 30 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
 <p>No reverse coding needed. <strong>The higher the score, the more the parent cheers the child up</strong>.</p>
 </div>
+<div id="questionnaire-89-when-you-and-one-of-your-children-have-had-a-disagreement-how-often-have-you" class="section level3">
+<h3>Questionnaire #89: When you and one of your children have had a disagreement, how often have you…</h3>
+<p>Example question: a. Just kept your opinion to your self (Never to Very often)</p>
+<pre class="r"><code>DS3[, c(550:553)] &lt;- sim_impu(DS3[, c(550:553)], 9)
+DS3[, c(550, 551)] &lt;- 5 - DS3[, c(550, 551)] #note, category 0 to 4
+DS3[, c(550:553)] &lt;- sim_impu(DS3[, c(550:553)], 9, repl = T)
+summary(DS3[, c(550:553)])</code></pre>
+<pre><code>##     KPOPN__1        DISCUS_1        ARGUEC_1        HITCHL_1     
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.0000  
+##  1st Qu.:3.000   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:0.0000  
+##  Median :4.000   Median :2.000   Median :2.000   Median :0.0000  
+##  Mean   :3.701   Mean   :2.141   Mean   :1.531   Mean   :0.4039  
+##  3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:2.000   3rd Qu.:1.0000  
+##  Max.   :5.000   Max.   :5.000   Max.   :4.000   Max.   :3.3333  
+##  NA's   :33      NA's   :33      NA's   :33      NA's   :33</code></pre>
+<p>Note: 33 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>After reverse coding, <strong>the higher the score, the more often the parent (aggressively) discusses issues with the child</strong>.</p>
+</div>
+<div id="questionnaire-91-now-were-going-to-list-statements-that-deal-with-ways-that-you-may-perceive-yourself.-indicate-how-often-these-statements-apply-to-you." class="section level3">
+<h3>Questionnaire #91: Now we’re going to list statements that deal with ways that you may perceive yourself. Indicate how often these statements apply to you.</h3>
+<p>Example question: a. I feel good about myself.</p>
+<pre class="r"><code>DS3[, c(555:568)] &lt;- sim_impu(DS3[, c(555:568)], 9)
+DS3[, c(556:562, 565, 566)] &lt;- 4 -  DS3[, c(556:562, 565, 566)]
+DS3[, c(555:568)] &lt;- sim_impu(DS3[, c(555:568)], 9, repl = T)
+summary(DS3[, c(555:568)])</code></pre>
+<pre><code>##     FEELGD_1        NOPROU_1        EDGE___1       FORGET_1    
+##  Min.   :1.000   Min.   :0.000   Min.   :0.00   Min.   :0.000  
+##  1st Qu.:3.000   1st Qu.:3.000   1st Qu.:2.00   1st Qu.:2.000  
+##  Median :3.000   Median :3.000   Median :3.00   Median :3.000  
+##  Mean   :3.032   Mean   :3.047   Mean   :2.87   Mean   :2.456  
+##  3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.:3.00   3rd Qu.:3.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.00   Max.   :4.000  
+##  NA's   :29      NA's   :29      NA's   :29     NA's   :29     
+##     NERVOU_1        CONCEN_1        UNPRED_1        MOANGR_1   
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.00  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:3.000   1st Qu.:2.00  
+##  Median :3.000   Median :3.000   Median :3.000   Median :3.00  
+##  Mean   :2.962   Mean   :2.768   Mean   :3.139   Mean   :2.73  
+##  3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:4.000   3rd Qu.:3.00  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.00  
+##  NA's   :29      NA's   :29      NA's   :29      NA's   :29    
+##     EXANGR_1        ONTOPO_1        STRESS_1        NOCOPE_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:1.000   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:2.000  
+##  Median :2.000   Median :3.000   Median :2.000   Median :2.000  
+##  Mean   :1.859   Mean   :2.666   Mean   :1.802   Mean   :2.301  
+##  3rd Qu.:2.000   3rd Qu.:3.000   3rd Qu.:2.000   3rd Qu.:3.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :29      NA's   :29      NA's   :29      NA's   :29     
+##     CONFID_1        CONFWK_1    
+##  Min.   :0.000   Min.   :0.000  
+##  1st Qu.:3.000   1st Qu.:3.000  
+##  Median :3.000   Median :3.000  
+##  Mean   :3.063   Mean   :3.302  
+##  3rd Qu.:4.000   3rd Qu.:4.000  
+##  Max.   :4.000   Max.   :4.000  
+##  NA's   :29      NA's   :29</code></pre>
+<p>Note: 29 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>After the reverse coding, <strong>the higher the score, the more confident (and the less anger) the parent feels about him/herself</strong>.</p>
+</div>
+<div id="combining-all-the-questionnaires-above" class="section level3">
+<h3>Combining all the questionnaires above</h3>
+<pre class="r"><code>DS3_NEW &lt;- rowMeans(DS3[, c(352:367)])
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(368:371)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(379:386)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(387:404)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(441:460)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(540:543)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(544:549)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(550:553)]))
+DS3_NEW &lt;- cbind(DS3_NEW, rowMeans(DS3[, c(555:568)]))
+DS3_NEW &lt;- cbind(DS3[, 1:3],DS3_NEW)
+
+colnames(DS3_NEW)[4:12] &lt;- c(&quot;Relationship with partners&quot;, &quot;Argue with partners&quot;, &quot;Childs bright future&quot;,
+                               &quot;Activities with children&quot;, &quot;Family hassles&quot;, &quot;Feeling about parenting&quot;, 
+                               &quot;Communation with children&quot;, &quot;Argue with children&quot;, &quot;Confidence about oneself&quot;)
+
+summary(DS3_NEW)</code></pre>
+<pre><code>##     ï..ID_1          PERID__1        FAMID__1   
+##  Min.   :100101   Min.   :1.000   Min.   :1001  
+##  1st Qu.:113627   1st Qu.:1.000   1st Qu.:1136  
+##  Median :128202   Median :2.000   Median :1282  
+##  Mean   :156564   Mean   :1.572   Mean   :1565  
+##  3rd Qu.:206576   3rd Qu.:2.000   3rd Qu.:2065  
+##  Max.   :303102   Max.   :2.000   Max.   :3031  
+##                                   NA's   :1     
+##  Relationship with partners Argue with partners Childs bright future
+##  Min.   :1.000              Min.   :2.000       Min.   :2.250       
+##  1st Qu.:3.125              1st Qu.:3.500       1st Qu.:4.125       
+##  Median :3.688              Median :3.750       Median :4.625       
+##  Mean   :3.595              Mean   :3.655       Mean   :4.464       
+##  3rd Qu.:4.188              3rd Qu.:4.000       3rd Qu.:5.000       
+##  Max.   :5.000              Max.   :5.000       Max.   :5.000       
+##  NA's   :96                 NA's   :96          NA's   :31          
+##  Activities with children Family hassles  Feeling about parenting
+##  Min.   :1.143            Min.   :1.000   Min.   :1.000          
+##  1st Qu.:2.143            1st Qu.:2.050   1st Qu.:2.250          
+##  Median :2.471            Median :2.450   Median :2.750          
+##  Mean   :2.444            Mean   :2.429   Mean   :2.661          
+##  3rd Qu.:2.722            3rd Qu.:2.750   3rd Qu.:3.000          
+##  Max.   :4.000            Max.   :4.300   Max.   :5.000          
+##  NA's   :33               NA's   :565     NA's   :30             
+##  Communation with children Argue with children Confidence about oneself
+##  Min.   :1.000             Min.   :0.000       Min.   :1.143           
+##  1st Qu.:3.833             1st Qu.:1.750       1st Qu.:2.429           
+##  Median :4.000             Median :2.000       Median :2.714           
+##  Mean   :4.117             Mean   :1.944       Mean   :2.714           
+##  3rd Qu.:4.500             3rd Qu.:2.250       3rd Qu.:3.071           
+##  Max.   :5.000             Max.   :3.500       Max.   :3.929           
+##  NA's   :31                NA's   :33          NA's   :29</code></pre>
+</div>
 </div>
 </div>
 

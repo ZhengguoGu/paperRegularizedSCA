@@ -42,7 +42,7 @@ DS3[, c(370, 371)] <- 6 - DS3[, c(370, 371)] #so the higher the value the calmer
 # regarding "when you and one of your children have had a disagreement..."
 summary(DS3[, c(550:553)])
 DS3[, c(550:553)] <- sim_impu(DS3[, c(550:553)], 9)
-DS3[, 550] <- 5 - DS3[, 550] #note, category 0 to 4
+DS3[, c(550, 551)] <- 5 - DS3[, c(550, 551)] #note, category 0 to 4
 # regarding "Now we're going to list some statements that deal with ways that you may perceive yourself...
 summary(DS3[, c(555:568)])
 DS3[, c(555:568)] <- sim_impu(DS3[, c(555:568)], 9)
