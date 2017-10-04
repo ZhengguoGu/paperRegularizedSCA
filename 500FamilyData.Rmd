@@ -220,3 +220,154 @@ Note that item "family hassles" contains 565 missing values (i.e., 565 persons d
 
 ## Process DS4 data
 !! Note: For this dataset, the corresponding questionnaires are not included in the datafile folders, nor are they available online. However, based on the labels in the SPSS file and also in the Code book, we are able to tell which items belong together and form a questionnaire. 
+
+### Questionnaire #29 (title unknown; tentative title: Self confidence/esteem)
+example question: a. it is difficult to be myself.
+
+```{r}
+DS4[, c(176:183)] <- sim_impu(DS4[, c(176:183)], 9)
+DS4[, c(176, 181, 182)] <- 3 - DS4[, c(176, 181, 182)]  #recoding, answer category 0~3
+DS4[, c(176:183)] <- sim_impu(DS4[, c(176:183)], 9, repl = T)
+summary(DS4[, c(176:183)])
+```
+Note: 38 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+After reverse coding, **the higher the score, the higher level of self confidence/esteem**.
+
+### Question #44: Grades on most recent report card 
+```{r}
+DS4[which(DS4[, 304] == 99), 304]<- NA #99:missing value
+DS4[which(DS4[, 304] == 9), 304] <- NA #9: no grade
+DS4[, 304] <- 9 - DS4[, 304]
+summary(DS4[, 304])
+```
+Note: 50 persons don't have a score for this question.
+
+After reverse coding, **the higher the score, the better the academic performance**.
+
+### Questionnaire #51: (title unknown; tentative title: social life and extracurricular activities)
+```{r}
+DS4[, c(326:342)] <- sim_impu(DS4[, c(326:342)], 9, repl = T)
+summary(DS4[, c(326:342)])
+```
+Note: 46 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed, **the higher the score, the more time for social life and extracurricular activities**.
+
+### Questionnaire #61: (title unknown; tentative title: (importance of) friendship)
+
+Example question: a. I have lots of friends.
+```{r}
+DS4[, c(359:367)] <- sim_impu(DS4[, c(359:367)], 9)
+DS4[, c(361, 362)] <- 6 - DS4[, c(361, 362)]
+DS4[, c(359:367)] <- sim_impu(DS4[, c(359:367)], 9, repl = T)
+summary(DS4[, c(359:367)])
+```
+Note: no missing values
+
+After reverse coding, **the higher the score, the more important/the more friends/the more a person trusts his/her friend**.
+
+### Questionnaire #64: (title unknown; tentative title: self image)
+Example question: a. I feel good about myself.
+
+```{r}
+DS4[, c(381:397)] <- sim_impu(DS4[, c(381:397)], 9)
+DS4[, c(383,384, 386:388, 390:394, 396,397)] <- 4 - DS4[, c(383,384, 386:388, 390:394, 396,397)] #reverse coding
+DS4[, c(381:397)] <- sim_impu(DS4[, c(381:397)], 9, repl = T)
+summary(DS4[, c(381:397)])
+```
+Note: 54 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+After reverse coding, **the higher the score, the more positive self image one has (the more calm, the less aggressive etc.)**.
+
+### Questionnaire #66 (title unknown; tentative title: Happiness)
+Example question: a. I was bothered by things that are usually ok.
+
+```{r}
+DS4[, c(399:418)] <- sim_impu(DS4[, c(399:418)], 9)
+DS4[, c(399, 400, 402, 403, 405:411, 413, 414, 416:418)] <- 3 - DS4[, c(399, 400, 402, 403, 405:411, 413, 414, 416:418)]
+DS4[, c(399:418)] <- sim_impu(DS4[, c(399:418)], 9, repl = T)
+summary(DS4[, c(399:418)])
+```
+Note: 57 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+After reverse coding, **the higher the score, the more happier the person was**. 
+
+### Questionnaire #77: (title unknown; tentative title: Confidence about the future)
+Example question: a. you will have a job that pays well.
+
+```{r}
+DS4[, c(468:480)] <- sim_impu(DS4[, c(468:480)], 9, repl = T)
+summary(DS4[, c(468:480)])
+```
+Note: 50 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
+
+No reverse coding needed; **the higher the score, the more confident a person is about the future**.
+
+### Combine all the data above
+```{r}
+DS4_NEW <- rowMeans(DS4[, 176:183]) #self confidence/esteem
+DS4_NEW <- cbind(DS4_NEW, DS4[, 304]) #academic performance
+DS4_NEW <- cbind(DS4_NEW, rowMeans(DS4[, 326:342])) # social/extracurricular
+DS4_NEW <- cbind(DS4_NEW, rowMeans(DS4[, 359:367])) # importance of friendship
+DS4_NEW <- cbind(DS4_NEW, rowMeans(DS4[, 381:397])) # self image
+DS4_NEW <- cbind(DS4_NEW, rowMeans(DS4[, 399:418])) # happiness
+DS4_NEW <- cbind(DS4_NEW, rowMeans(DS4[, 468:480])) # confidence about future
+DS4_NEW <- cbind(DS4[, 1:3], DS4_NEW)
+
+colnames(DS4_NEW)[4:10] <- c("Self confidence/esteem", "Academic performance", "Social life and extracurricular", "Importance of friendship",
+                             "Self Image", "Happiness", "Confidence about the future")
+summary(DS4_NEW)
+```
+# Step 3. Combine DS3 and DS4 data
+
+Because "family hassels" in DS3_NEW contains too much NA values, better remove this column.
+```{r}
+DS3_NEW <- DS3_NEW[, -8]
+```
+
+Remove NA's.
+```{r}
+DS3_NEW_Final <- DS3_NEW[-sort(unique(which(is.na(DS3_NEW), arr.ind = T)[, 1])), ]
+DS4_NEW_Final <- DS4_NEW[-sort(unique(which(is.na(DS4_NEW), arr.ind = T)[, 1])), ]
+summary(DS3_NEW_Final)
+summary(DS4_NEW_Final)
+```
+
+Devide DS3 dataset into to datasets -- one for the mother and one for the father, so that in the end, we have three datasets (i.e., mother, father, child).
+```{r}
+DS3_Mom <- DS3_NEW_Final[DS3_NEW_Final[, 2]==2, ]
+DS3_Dad <- DS3_NEW_Final[DS3_NEW_Final[, 2]==1, ]
+DS4_Kid <- DS4_NEW_Final
+
+family_index <- intersect(intersect(DS3_Mom[, 3], DS3_Dad[, 3]), DS4_Kid[, 3])
+DS3_Mom_Final <- DS3_Mom[DS3_Mom[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS3_Mom_Final <- rbind(DS3_Mom_Final, DS3_Mom[DS3_Mom[, 3]==family_index[i], ])
+}
+DS3_Dad_Final <- DS3_Dad[DS3_Dad[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS3_Dad_Final <- rbind(DS3_Dad_Final, DS3_Dad[DS3_Dad[, 3]==family_index[i], ])
+}
+DS4_Kid_Final <- DS4_Kid[DS4_Kid[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS4_Kid_Final <- rbind(DS4_Kid_Final, DS4_Kid[DS4_Kid[, 3]==family_index[i], ])
+}
+
+DS4_Kid_Final <- DS4_Kid_Final[!duplicated(DS4_Kid_Final[, 3]), ]  # a family can have more than 1 child. 
+
+```
+We now have the final datasets for mother, father, and child. Each row representing the mother/father/child from the SAME family. 
+
+```{r}
+family_data <- list("mom" = DS3_Mom_Final[, -c(1:3)], "dad" = DS3_Dad_Final[, -c(1:3)], "child" = DS4_Kid[, -c(1:3)])
+colnames(family_data[[1]]) <- c("M: Relationship with partners", "M: Argue with partners", "M: Childs bright future",
+                     "M: Activities with children", "M: Feeling about parenting", 
+                     "M: Communation with children", "M: Argue with children", 
+                     "M: Confidence about oneself")
+colnames(family_data[[2]]) <- c("D: Relationship with partners", "D: Argue with partners", "D: Childs bright future",
+                   "D: Activities with children", "D: Feeling about parenting", 
+                   "D: Communation with children", "D: Argue with children", 
+                   "D: Confidence about oneself")
+save(family_data, file = "D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/family_data.RData") 
+```

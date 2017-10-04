@@ -518,8 +518,415 @@ summary(DS3_NEW)</code></pre>
 ##  3rd Qu.:4.500             3rd Qu.:2.250       3rd Qu.:3.071           
 ##  Max.   :5.000             Max.   :3.500       Max.   :3.929           
 ##  NA's   :31                NA's   :33          NA's   :29</code></pre>
+<p>Note that item “family hassles” contains 565 missing values (i.e., 565 persons did not fill in the famlily hassles questionnaire at all), and thus this item will be removed.</p>
 </div>
 </div>
+<div id="process-ds4-data" class="section level2">
+<h2>Process DS4 data</h2>
+<p>!! Note: For this dataset, the corresponding questionnaires are not included in the datafile folders, nor are they available online. However, based on the labels in the SPSS file and also in the Code book, we are able to tell which items belong together and form a questionnaire.</p>
+<div id="questionnaire-29-title-unknown-tentative-title-self-confidenceesteem" class="section level3">
+<h3>Questionnaire #29 (title unknown; tentative title: Self confidence/esteem)</h3>
+<p>example question: a. it is difficult to be myself.</p>
+<pre class="r"><code>DS4[, c(176:183)] &lt;- sim_impu(DS4[, c(176:183)], 9)
+DS4[, c(176, 181, 182)] &lt;- 3 - DS4[, c(176, 181, 182)]  #recoding, answer category 0~3
+DS4[, c(176:183)] &lt;- sim_impu(DS4[, c(176:183)], 9, repl = T)
+summary(DS4[, c(176:183)])</code></pre>
+<pre><code>##     NORELX_1        FAMCRE_1        FLGOOD_1        SPECHP_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:1.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000  
+##  Median :2.000   Median :2.000   Median :3.000   Median :2.000  
+##  Mean   :1.927   Mean   :2.176   Mean   :2.437   Mean   :2.031  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.000   Max.   :3.000  
+##  NA's   :38      NA's   :38      NA's   :38      NA's   :38     
+##     NOEMBR_1        PROBAT_1        HAPBIR_1         ALWLUV_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.0000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:0.0000   1st Qu.:3.000  
+##  Median :3.000   Median :2.000   Median :0.0000   Median :3.000  
+##  Mean   :2.486   Mean   :2.182   Mean   :0.3789   Mean   :2.764  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:1.0000   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.0000   Max.   :3.000  
+##  NA's   :38      NA's   :38      NA's   :38       NA's   :38</code></pre>
+<p>Note: 38 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>After reverse coding, <strong>the higher the score, the higher level of self confidence/esteem</strong>.</p>
+</div>
+<div id="question-44-grades-on-most-recent-report-card" class="section level3">
+<h3>Question #44: Grades on most recent report card</h3>
+<pre class="r"><code>DS4[which(DS4[, 304] == 99), 304]&lt;- NA #99:missing value
+DS4[which(DS4[, 304] == 9), 304] &lt;- NA #9: no grade
+DS4[, 304] &lt;- 9 - DS4[, 304]
+summary(DS4[, 304])</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   6.000   7.000   6.771   8.000   8.000      50</code></pre>
+<p>Note: 50 persons don’t have a score for this question.</p>
+<p>After reverse coding, <strong>the higher the score, the better the academic performance</strong>.</p>
+</div>
+<div id="questionnaire-51-title-unknown-tentative-title-social-life-and-extracurricular-activities" class="section level3">
+<h3>Questionnaire #51: (title unknown; tentative title: social life and extracurricular activities)</h3>
+<pre class="r"><code>DS4[, c(326:342)] &lt;- sim_impu(DS4[, c(326:342)], 9, repl = T)
+summary(DS4[, c(326:342)])</code></pre>
+<pre><code>##     FRIEND_1       TV_____1        GAMES__1        READIN_1    
+##  Min.   :1.00   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:2.00   1st Qu.:3.000   1st Qu.:1.000   1st Qu.:1.000  
+##  Median :3.00   Median :3.000   Median :2.000   Median :2.000  
+##  Mean   :2.67   Mean   :3.242   Mean   :2.348   Mean   :2.386  
+##  3rd Qu.:3.00   3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :4.00   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :46     NA's   :46      NA's   :46      NA's   :46     
+##     HOB____1        YUTGRP_1        SPORTF_1        POOL___1    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:1.000   1st Qu.:1.000   1st Qu.:1.000   1st Qu.:1.000  
+##  Median :2.000   Median :1.000   Median :2.000   Median :2.000  
+##  Mean   :2.056   Mean   :1.812   Mean   :2.376   Mean   :2.153  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :46      NA's   :46      NA's   :46      NA's   :46     
+##     VOLWRK_1        DRIVIN_1       TELEPH_1        TLKWAD_1    
+##  Min.   :1.000   Min.   :1.00   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:1.000   1st Qu.:1.00   1st Qu.:3.000   1st Qu.:2.000  
+##  Median :1.000   Median :2.00   Median :3.000   Median :2.000  
+##  Mean   :1.592   Mean   :2.05   Mean   :3.184   Mean   :2.471  
+##  3rd Qu.:2.000   3rd Qu.:3.00   3rd Qu.:4.000   3rd Qu.:3.000  
+##  Max.   :4.000   Max.   :4.00   Max.   :4.000   Max.   :4.000  
+##  NA's   :46      NA's   :46     NA's   :46      NA's   :46     
+##     ARTNCL_1        ARTOCL_1        RELCLS_1        LESSON_1    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:1.000   1st Qu.:1.000   1st Qu.:1.000   1st Qu.:1.000  
+##  Median :1.000   Median :1.000   Median :1.000   Median :1.000  
+##  Mean   :1.866   Mean   :1.828   Mean   :1.643   Mean   :1.636  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:2.822   3rd Qu.:2.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :46      NA's   :46      NA's   :46      NA's   :46     
+##     ATHLET_1    
+##  Min.   :1.000  
+##  1st Qu.:1.000  
+##  Median :3.000  
+##  Mean   :2.431  
+##  3rd Qu.:4.000  
+##  Max.   :4.000  
+##  NA's   :46</code></pre>
+<p>Note: 46 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>No reverse coding needed, <strong>the higher the score, the more time for social life and extracurricular activities</strong>.</p>
+</div>
+<div id="questionnaire-61-title-unknown-tentative-title-importance-of-friendship" class="section level3">
+<h3>Questionnaire #61: (title unknown; tentative title: (importance of) friendship)</h3>
+<p>Example question: a. I have lots of friends.</p>
+<pre class="r"><code>DS4[, c(359:367)] &lt;- sim_impu(DS4[, c(359:367)], 9)
+DS4[, c(361, 362)] &lt;- 6 - DS4[, c(361, 362)]
+DS4[, c(359:367)] &lt;- sim_impu(DS4[, c(359:367)], 9, repl = T)
+summary(DS4[, c(359:367)])</code></pre>
+<pre><code>##     MANY___1        POPULR_1       NEW____1        ESTRAN_1    
+##  Min.   :1.000   Min.   :1.00   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:4.000   1st Qu.:2.00   1st Qu.:3.000   1st Qu.:3.000  
+##  Median :4.000   Median :3.00   Median :4.000   Median :4.000  
+##  Mean   :4.186   Mean   :3.11   Mean   :3.893   Mean   :3.703  
+##  3rd Qu.:5.000   3rd Qu.:4.00   3rd Qu.:5.000   3rd Qu.:4.000  
+##  Max.   :5.000   Max.   :5.00   Max.   :5.000   Max.   :5.000  
+##  NA's   :57      NA's   :57     NA's   :57      NA's   :57     
+##     DOCARE_1        DOTRST_1        DOTALK_1        DOCOUN_1    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:4.000   1st Qu.:4.000   1st Qu.:3.000   1st Qu.:4.000  
+##  Median :4.000   Median :4.000   Median :4.000   Median :5.000  
+##  Mean   :4.064   Mean   :4.074   Mean   :3.987   Mean   :4.283  
+##  3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000  
+##  Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+##  NA's   :57      NA's   :57      NA's   :57      NA's   :57     
+##     DOLIKE_1   
+##  Min.   :1.00  
+##  1st Qu.:4.00  
+##  Median :4.50  
+##  Mean   :4.34  
+##  3rd Qu.:5.00  
+##  Max.   :5.00  
+##  NA's   :57</code></pre>
+<p>Note: no missing values</p>
+<p>After reverse coding, <strong>the higher the score, the more important/the more friends/the more a person trusts his/her friend</strong>.</p>
+</div>
+<div id="questionnaire-64-title-unknown-tentative-title-self-image" class="section level3">
+<h3>Questionnaire #64: (title unknown; tentative title: self image)</h3>
+<p>Example question: a. I feel good about myself.</p>
+<pre class="r"><code>DS4[, c(381:397)] &lt;- sim_impu(DS4[, c(381:397)], 9)
+DS4[, c(383,384, 386:388, 390:394, 396,397)] &lt;- 4 - DS4[, c(383,384, 386:388, 390:394, 396,397)] #reverse coding
+DS4[, c(381:397)] &lt;- sim_impu(DS4[, c(381:397)], 9, repl = T)
+summary(DS4[, c(381:397)])</code></pre>
+<pre><code>##     FEELGD_1        IGOODU_1        NOPROU_1        LOSER__1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:3.000   1st Qu.:2.000   1st Qu.:2.000  
+##  Median :3.000   Median :3.000   Median :3.000   Median :3.000  
+##  Mean   :3.032   Mean   :3.137   Mean   :2.752   Mean   :2.701  
+##  3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :54      NA's   :54      NA's   :54      NA's   :54     
+##     CALM___1        EDGE___1        WORRY__1        FORGET_1  
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.0  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.0  
+##  Median :3.000   Median :3.000   Median :2.000   Median :3.0  
+##  Mean   :2.567   Mean   :2.772   Mean   :2.255   Mean   :2.4  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.0  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.0  
+##  NA's   :54      NA's   :54      NA's   :54      NA's   :54   
+##     CONTRO_1        NERVOU_1        CONCEN_1        UNPRED_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000  
+##  Median :3.000   Median :3.000   Median :2.000   Median :3.000  
+##  Mean   :2.841   Mean   :2.632   Mean   :2.356   Mean   :2.806  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:4.000  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :54      NA's   :54      NA's   :54      NA's   :54     
+##     MOANGR_1        EXANGR_1        ONTOPO_1        STRESS_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:1.000   1st Qu.:2.000   1st Qu.:1.000  
+##  Median :3.000   Median :2.000   Median :3.000   Median :2.000  
+##  Mean   :2.607   Mean   :2.022   Mean   :2.583   Mean   :1.792  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:2.909  
+##  Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :4.000  
+##  NA's   :54      NA's   :54      NA's   :54      NA's   :54     
+##     NOCOPE_1    
+##  Min.   :0.000  
+##  1st Qu.:2.000  
+##  Median :2.000  
+##  Mean   :2.214  
+##  3rd Qu.:3.000  
+##  Max.   :4.000  
+##  NA's   :54</code></pre>
+<p>Note: 54 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>After reverse coding, <strong>the higher the score, the more positive self image one has (the more calm, the less aggressive etc.)</strong>.</p>
+</div>
+<div id="questionnaire-66-title-unknown-tentative-title-happiness" class="section level3">
+<h3>Questionnaire #66 (title unknown; tentative title: Happiness)</h3>
+<p>Example question: a. I was bothered by things that are usually ok.</p>
+<pre class="r"><code>DS4[, c(399:418)] &lt;- sim_impu(DS4[, c(399:418)], 9)
+DS4[, c(399, 400, 402, 403, 405:411, 413, 414, 416:418)] &lt;- 3 - DS4[, c(399, 400, 402, 403, 405:411, 413, 414, 416:418)]
+DS4[, c(399:418)] &lt;- sim_impu(DS4[, c(399:418)], 9, repl = T)
+summary(DS4[, c(399:418)])</code></pre>
+<pre><code>##     BOTHRD_1       APPETI_1        HOPEFU_1        BLUESH_1    
+##  Min.   :0.00   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.00   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:2.000  
+##  Median :3.00   Median :3.000   Median :2.000   Median :3.000  
+##  Mean   :2.37   Mean   :2.483   Mean   :1.809   Mean   :2.365  
+##  3rd Qu.:3.00   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :3.00   Max.   :3.000   Max.   :3.000   Max.   :3.000  
+##  NA's   :57     NA's   :57      NA's   :57      NA's   :57     
+##     KEEPMN_1        HAPPYA_1        DEPRES_1       SPELLS_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.00   Min.   :0.000  
+##  1st Qu.:1.000   1st Qu.:2.000   1st Qu.:2.00   1st Qu.:3.000  
+##  Median :2.000   Median :2.000   Median :2.00   Median :3.000  
+##  Mean   :1.896   Mean   :2.229   Mean   :2.25   Mean   :2.686  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.00   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.00   Max.   :3.000  
+##  NA's   :57      NA's   :57      NA's   :57     NA's   :57     
+##     FEARFL_1        DISLIK_1        RESTLS_1        TKLESS_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000  
+##  Median :3.000   Median :2.000   Median :3.000   Median :3.000  
+##  Mean   :2.581   Mean   :2.259   Mean   :2.259   Mean   :2.333  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.000   Max.   :3.000  
+##  NA's   :57      NA's   :57      NA's   :57      NA's   :57     
+##     LONELY_1        JOYLIF_1        FELTSD_1        NOTGOO_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000  
+##  Median :3.000   Median :2.000   Median :2.000   Median :2.000  
+##  Mean   :2.318   Mean   :2.192   Mean   :2.186   Mean   :2.236  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.000   Max.   :3.000  
+##  NA's   :57      NA's   :57      NA's   :57      NA's   :57     
+##     GOOD___1        FAILUR_1        UNFRDL_1        EFFORT_1    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:2.000   1st Qu.:3.000   1st Qu.:2.000   1st Qu.:1.000  
+##  Median :2.000   Median :3.000   Median :2.000   Median :2.000  
+##  Mean   :2.148   Mean   :2.712   Mean   :2.269   Mean   :1.708  
+##  3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.:3.000  
+##  Max.   :3.000   Max.   :3.000   Max.   :3.000   Max.   :3.000  
+##  NA's   :57      NA's   :57      NA's   :57      NA's   :57</code></pre>
+<p>Note: 57 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>After reverse coding, <strong>the higher the score, the more happier the person was</strong>.</p>
+</div>
+<div id="questionnaire-77-title-unknown-tentative-title-confidence-about-the-future" class="section level3">
+<h3>Questionnaire #77: (title unknown; tentative title: Confidence about the future)</h3>
+<p>Example question: a. you will have a job that pays well.</p>
+<pre class="r"><code>DS4[, c(468:480)] &lt;- sim_impu(DS4[, c(468:480)], 9, repl = T)
+summary(DS4[, c(468:480)])</code></pre>
+<pre><code>##     GOODJB_1        TNOWN__1       FUNJOB_1       LVWFAM_1    
+##  Min.   :1.000   Min.   :1.00   Min.   :1.00   Min.   :1.000  
+##  1st Qu.:4.000   1st Qu.:4.00   1st Qu.:4.00   1st Qu.:3.000  
+##  Median :4.000   Median :4.00   Median :4.00   Median :3.000  
+##  Mean   :4.046   Mean   :4.21   Mean   :4.18   Mean   :3.139  
+##  3rd Qu.:5.000   3rd Qu.:5.00   3rd Qu.:5.00   3rd Qu.:4.000  
+##  Max.   :5.000   Max.   :5.00   Max.   :5.00   Max.   :5.000  
+##  NA's   :50      NA's   :50     NA's   :50     NA's   :50     
+##     MARRIE_1        CHILDR_1        HAPFAM_1        HEALTH_1    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:4.000   1st Qu.:4.000   1st Qu.:4.000   1st Qu.:4.000  
+##  Median :4.000   Median :4.000   Median :4.000   Median :4.000  
+##  Mean   :4.208   Mean   :4.059   Mean   :4.191   Mean   :4.124  
+##  3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000  
+##  Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+##  NA's   :50      NA's   :50      NA's   :50      NA's   :50     
+##     FREEDO_1        RESPEC_1        FRIEGO_1        BETTER_1    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:3.000   1st Qu.:4.000   1st Qu.:4.000   1st Qu.:3.000  
+##  Median :4.000   Median :4.000   Median :4.000   Median :3.000  
+##  Mean   :3.939   Mean   :4.037   Mean   :4.276   Mean   :3.526  
+##  3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:5.000   3rd Qu.:4.000  
+##  Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+##  NA's   :50      NA's   :50      NA's   :50      NA's   :50     
+##     BEST___1    
+##  Min.   :1.000  
+##  1st Qu.:3.000  
+##  Median :3.000  
+##  Mean   :3.446  
+##  3rd Qu.:4.000  
+##  Max.   :5.000  
+##  NA's   :50</code></pre>
+<p>Note: 50 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.</p>
+<p>No reverse coding needed; <strong>the higher the score, the more confident a person is about the future</strong>.</p>
+</div>
+<div id="combine-all-the-data-above" class="section level3">
+<h3>Combine all the data above</h3>
+<pre class="r"><code>DS4_NEW &lt;- rowMeans(DS4[, 176:183]) #self confidence/esteem
+DS4_NEW &lt;- cbind(DS4_NEW, DS4[, 304]) #academic performance
+DS4_NEW &lt;- cbind(DS4_NEW, rowMeans(DS4[, 326:342])) # social/extracurricular
+DS4_NEW &lt;- cbind(DS4_NEW, rowMeans(DS4[, 359:367])) # importance of friendship
+DS4_NEW &lt;- cbind(DS4_NEW, rowMeans(DS4[, 381:397])) # self image
+DS4_NEW &lt;- cbind(DS4_NEW, rowMeans(DS4[, 399:418])) # happiness
+DS4_NEW &lt;- cbind(DS4_NEW, rowMeans(DS4[, 468:480])) # confidence about future
+DS4_NEW &lt;- cbind(DS4[, 1:3], DS4_NEW)
+
+colnames(DS4_NEW)[4:10] &lt;- c(&quot;Self confidence/esteem&quot;, &quot;Academic performance&quot;, &quot;Social life and extracurricular&quot;, &quot;Importance of friendship&quot;,
+                             &quot;Self Image&quot;, &quot;Happiness&quot;, &quot;Confidence about the future&quot;)
+summary(DS4_NEW)</code></pre>
+<pre><code>##     ï..ID_1          PERID__1        FAMID__1    Self confidence/esteem
+##  Min.   :100103   Min.   :3.000   Min.   :1001   Min.   :0.000         
+##  1st Qu.:110804   1st Qu.:3.000   1st Qu.:1108   1st Qu.:1.750         
+##  Median :119903   Median :3.000   Median :1199   Median :2.125         
+##  Mean   :131786   Mean   :3.359   Mean   :1318   Mean   :2.048         
+##  3rd Qu.:128904   3rd Qu.:4.000   3rd Qu.:1289   3rd Qu.:2.375         
+##  Max.   :303104   Max.   :6.000   Max.   :3031   Max.   :3.000         
+##                                                  NA's   :38            
+##  Academic performance Social life and extracurricular
+##  Min.   :1.000        Min.   :1.294                  
+##  1st Qu.:6.000        1st Qu.:1.941                  
+##  Median :7.000        Median :2.235                  
+##  Mean   :6.771        Mean   :2.220                  
+##  3rd Qu.:8.000        3rd Qu.:2.471                  
+##  Max.   :8.000        Max.   :4.000                  
+##  NA's   :50           NA's   :46                     
+##  Importance of friendship   Self Image       Happiness    
+##  Min.   :1.000            Min.   :0.5882   Min.   :0.250  
+##  1st Qu.:3.667            1st Qu.:2.2353   1st Qu.:2.000  
+##  Median :4.000            Median :2.5882   Median :2.400  
+##  Mean   :3.960            Mean   :2.5570   Mean   :2.265  
+##  3rd Qu.:4.361            3rd Qu.:2.9412   3rd Qu.:2.600  
+##  Max.   :5.000            Max.   :3.8235   Max.   :3.000  
+##  NA's   :57               NA's   :54       NA's   :57     
+##  Confidence about the future
+##  Min.   :1.462              
+##  1st Qu.:3.615              
+##  Median :3.923              
+##  Mean   :3.952              
+##  3rd Qu.:4.308              
+##  Max.   :5.000              
+##  NA's   :50</code></pre>
+</div>
+</div>
+</div>
+<div id="step-3.-combine-ds3-and-ds4-data" class="section level1">
+<h1>Step 3. Combine DS3 and DS4 data</h1>
+<p>Because “family hassels” in DS3_NEW contains too much NA values, better remove this column.</p>
+<pre class="r"><code>DS3_NEW &lt;- DS3_NEW[, -8]</code></pre>
+<p>Remove NA’s.</p>
+<pre class="r"><code>DS3_NEW_Final &lt;- DS3_NEW[-sort(unique(which(is.na(DS3_NEW), arr.ind = T)[, 1])), ]
+DS4_NEW_Final &lt;- DS4_NEW[-sort(unique(which(is.na(DS4_NEW), arr.ind = T)[, 1])), ]
+summary(DS3_NEW_Final)</code></pre>
+<pre><code>##     ï..ID_1          PERID__1        FAMID__1   
+##  Min.   :100101   Min.   :1.000   Min.   :1001  
+##  1st Qu.:113052   1st Qu.:1.000   1st Qu.:1130  
+##  Median :128752   Median :2.000   Median :1288  
+##  Mean   :157267   Mean   :1.538   Mean   :1573  
+##  3rd Qu.:206676   3rd Qu.:2.000   3rd Qu.:2067  
+##  Max.   :303102   Max.   :2.000   Max.   :3031  
+##  Relationship with partners Argue with partners Childs bright future
+##  Min.   :1.000              Min.   :2.000       Min.   :2.250       
+##  1st Qu.:3.125              1st Qu.:3.500       1st Qu.:4.125       
+##  Median :3.688              Median :3.750       Median :4.625       
+##  Mean   :3.594              Mean   :3.662       Mean   :4.472       
+##  3rd Qu.:4.188              3rd Qu.:4.000       3rd Qu.:5.000       
+##  Max.   :5.000              Max.   :5.000       Max.   :5.000       
+##  Activities with children Feeling about parenting
+##  Min.   :1.143            Min.   :1.000          
+##  1st Qu.:2.146            1st Qu.:2.250          
+##  Median :2.485            Median :2.750          
+##  Mean   :2.449            Mean   :2.653          
+##  3rd Qu.:2.722            3rd Qu.:3.000          
+##  Max.   :4.000            Max.   :5.000          
+##  Communation with children Argue with children Confidence about oneself
+##  Min.   :1.000             Min.   :0.00        Min.   :1.143           
+##  1st Qu.:3.833             1st Qu.:1.50        1st Qu.:2.429           
+##  Median :4.000             Median :2.00        Median :2.760           
+##  Mean   :4.111             Mean   :1.93        Mean   :2.722           
+##  3rd Qu.:4.500             3rd Qu.:2.25        3rd Qu.:3.071           
+##  Max.   :5.000             Max.   :3.50        Max.   :3.929</code></pre>
+<pre class="r"><code>summary(DS4_NEW_Final)</code></pre>
+<pre><code>##     ï..ID_1          PERID__1        FAMID__1    Self confidence/esteem
+##  Min.   :100103   Min.   :3.000   Min.   :1001   Min.   :0.000         
+##  1st Qu.:110103   1st Qu.:3.000   1st Qu.:1101   1st Qu.:1.875         
+##  Median :119603   Median :3.000   Median :1196   Median :2.125         
+##  Mean   :130468   Mean   :3.344   Mean   :1305   Mean   :2.069         
+##  3rd Qu.:129253   3rd Qu.:4.000   3rd Qu.:1292   3rd Qu.:2.375         
+##  Max.   :303104   Max.   :6.000   Max.   :3031   Max.   :3.000         
+##  Academic performance Social life and extracurricular
+##  Min.   :1.000        Min.   :1.294                  
+##  1st Qu.:6.000        1st Qu.:1.941                  
+##  Median :7.000        Median :2.235                  
+##  Mean   :6.806        Mean   :2.219                  
+##  3rd Qu.:8.000        3rd Qu.:2.471                  
+##  Max.   :8.000        Max.   :3.235                  
+##  Importance of friendship   Self Image       Happiness    
+##  Min.   :1.556            Min.   :0.5882   Min.   :0.250  
+##  1st Qu.:3.667            1st Qu.:2.2353   1st Qu.:2.025  
+##  Median :4.000            Median :2.5882   Median :2.400  
+##  Mean   :3.958            Mean   :2.5652   Mean   :2.270  
+##  3rd Qu.:4.333            3rd Qu.:2.9412   3rd Qu.:2.600  
+##  Max.   :5.000            Max.   :3.8235   Max.   :3.000  
+##  Confidence about the future
+##  Min.   :1.615              
+##  1st Qu.:3.615              
+##  Median :3.923              
+##  Mean   :3.953              
+##  3rd Qu.:4.308              
+##  Max.   :5.000</code></pre>
+<p>Devide DS3 dataset into to datasets – one for the mother and one for the father, so that in the end, we have three datasets (i.e., mother, father, child).</p>
+<pre class="r"><code>DS3_Mom &lt;- DS3_NEW_Final[DS3_NEW_Final[, 2]==2, ]
+DS3_Dad &lt;- DS3_NEW_Final[DS3_NEW_Final[, 2]==1, ]
+DS4_Kid &lt;- DS4_NEW_Final
+
+family_index &lt;- intersect(intersect(DS3_Mom[, 3], DS3_Dad[, 3]), DS4_Kid[, 3])
+DS3_Mom_Final &lt;- DS3_Mom[DS3_Mom[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS3_Mom_Final &lt;- rbind(DS3_Mom_Final, DS3_Mom[DS3_Mom[, 3]==family_index[i], ])
+}
+DS3_Dad_Final &lt;- DS3_Dad[DS3_Dad[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS3_Dad_Final &lt;- rbind(DS3_Dad_Final, DS3_Dad[DS3_Dad[, 3]==family_index[i], ])
+}
+DS4_Kid_Final &lt;- DS4_Kid[DS4_Kid[, 3]==family_index[1], ]
+for(i in 2:length(family_index)){
+  DS4_Kid_Final &lt;- rbind(DS4_Kid_Final, DS4_Kid[DS4_Kid[, 3]==family_index[i], ])
+}
+
+DS4_Kid_Final &lt;- DS4_Kid_Final[!duplicated(DS4_Kid_Final[, 3]), ]  # a family can have more than 1 child. </code></pre>
+<p>We now have the final datasets for mother, father, and child. Each row representing the mother/father/child from the SAME family.</p>
+<pre class="r"><code>family_data &lt;- list(&quot;mom&quot; = DS3_Mom_Final[, -c(1:3)], &quot;dad&quot; = DS3_Dad_Final[, -c(1:3)], &quot;child&quot; = DS4_Kid[, -c(1:3)])
+colnames(family_data[[1]]) &lt;- c(&quot;M: Relationship with partners&quot;, &quot;M: Argue with partners&quot;, &quot;M: Childs bright future&quot;,
+                     &quot;M: Activities with children&quot;, &quot;M: Feeling about parenting&quot;, 
+                     &quot;M: Communation with children&quot;, &quot;M: Argue with children&quot;, 
+                     &quot;M: Confidence about oneself&quot;)
+colnames(family_data[[2]]) &lt;- c(&quot;D: Relationship with partners&quot;, &quot;D: Argue with partners&quot;, &quot;D: Childs bright future&quot;,
+                   &quot;D: Activities with children&quot;, &quot;D: Feeling about parenting&quot;, 
+                   &quot;D: Communation with children&quot;, &quot;D: Argue with children&quot;, 
+                   &quot;D: Confidence about oneself&quot;)
+save(family_data, file = &quot;D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/family_data.RData&quot;) </code></pre>
 </div>
 
 
