@@ -18,9 +18,10 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
-############### SECTION 3.1 ##################################
+install.packages(pkgs="D://RegularizedSCA_0.5.0.tar.gz", repos = NULL)
 
+############### SECTION: the RegularizedSCA package ##########################
+####### subsection: Exploring the component structure and functionalities
 ### 1. load the package and data
 library("RegularizedSCA")
 names(Herring)  #one can check the names of the data file "Herring" 
@@ -104,7 +105,9 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
 ### 6. The T matrix or one can check summary(final_Loading) for T matrix
 final_Loading$Tmatrix
 
-################ SECTION 3.2 ################################################
+####################################################################
+
+###### Subsection: Regularized with known structure
 
 # 1. cv_structuredSCA()
 targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
@@ -160,3 +163,36 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
 
+
+##############################################################
+##### Empirical example
+#load data
+load("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData")
+
+library("psych")
+library("RegularizedSCA")
+describe(family_data[[1]])  #mother
+describe(family_data[[2]])  #father
+describe(family_data[[3]])  #child
+
+data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
+num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
+
+#use VAF method
+VAF(DATA = data, Jk = num_var, R = 10)
+
+set.seed(111)
+results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
+recommended_tuning <- summary(results_cv)
+plot(results_cv)
+
+set.seed(111)
+final_results <- sparseSCA(data, num_var, R = 5, 
+                           LASSO = recommended_tuning[1], 
+                           GROUPLASSO = recommended_tuning[2], 
+                           NRSTART = 20)
+final_results$Pmatrix
+
+final_Loading <- undoShrinkage(data, R = 5, 
+                               final_results$Pmatrix)
+final_Loading$Pmatrix
