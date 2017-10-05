@@ -196,3 +196,5 @@ final_results$Pmatrix
 final_Loading <- undoShrinkage(data, R = 5, 
                                final_results$Pmatrix)
 final_Loading$Pmatrix
+
+write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
