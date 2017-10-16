@@ -18,7 +18,50 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-install.packages(pkgs="D://RegularizedSCA_0.5.0.tar.gz", repos = NULL)
+install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
+
+##############################################################
+##### Empirical example
+#load data
+load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
+
+library("psych")
+library("RegularizedSCA")
+describe(family_data[[1]])  #mother
+describe(family_data[[2]])  #father
+describe(family_data[[3]])  #child
+
+data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
+num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
+
+#use VAF method
+summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 components because on the 5th component, the variance 
+                                                # of the second block is rather large (.104), which is even larger than all the 
+                                                # variances in the 4th component. On the other hand, the 4th component cannot 
+                                                # be droped because the total variance of the 4th component is larger than 
+                                                # the 5th (the total variances of the components are from highest to lowest).
+                                                # Of course, like the scree plot of PCA, the number of R is sometimes subjectively chosen. 
+
+set.seed(111)
+results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
+summary(results_cv)
+plot(results_cv)
+
+set.seed(111)
+final_results <- sparseSCA(data, num_var, R = 5, 
+                           LASSO = 2.82068, 
+                           GROUPLASSO = 1.28369, 
+                           NRSTART = 20)
+final_results$Pmatrix
+
+final_Loading <- undoShrinkage(data, R = 5, 
+                               final_results$Pmatrix)
+final_Loading$Pmatrix
+
+write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
+
+
+
 
 ############### SECTION: the RegularizedSCA package ##########################
 ####### subsection: Exploring the component structure and functionalities
@@ -164,37 +207,3 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_y_discrete(expand = c(0, 0))
 
 
-##############################################################
-##### Empirical example
-#load data
-load("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData")
-
-library("psych")
-library("RegularizedSCA")
-describe(family_data[[1]])  #mother
-describe(family_data[[2]])  #father
-describe(family_data[[3]])  #child
-
-data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
-num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
-
-#use VAF method
-VAF(DATA = data, Jk = num_var, R = 10)
-
-set.seed(111)
-results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
-recommended_tuning <- summary(results_cv)
-plot(results_cv)
-
-set.seed(111)
-final_results <- sparseSCA(data, num_var, R = 5, 
-                           LASSO = recommended_tuning[1], 
-                           GROUPLASSO = recommended_tuning[2], 
-                           NRSTART = 20)
-final_results$Pmatrix
-
-final_Loading <- undoShrinkage(data, R = 5, 
-                               final_results$Pmatrix)
-final_Loading$Pmatrix
-
-write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
