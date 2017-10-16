@@ -51,11 +51,11 @@ sim_impu <- function(DATA, M_values, repl){
 ## Load raw data
 
 ```{r}
-DS3 = read.csv("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0003-Data.csv", sep = ";" )
-DS4 = read.csv("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0004-Data.csv", sep = ";" )
+#DS3 = read.csv("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0003-Data.csv", sep = ";" )
+#DS4 = read.csv("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0004-Data.csv", sep = ";" )
 
-#DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
-#DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+DS3 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
+DS4 = read.csv("D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv", sep = ";" ) #PC at home (synced with dropbox)
 ```
 
 ## Process DS3 data
@@ -151,11 +151,12 @@ Example question: a. Being a parent is harder than I thought it would be. (Never
 
 ```{r}
 DS3[, c(540:543)] <- sim_impu(DS3[, c(540:543)], 9, repl = T)
+DS3[, c(540:543)] <- 6 - DS3[, c(540:543)] #reverse coding
 summary(DS3[, c(540:543)])
 ```
 Note: 30 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
 
-No reverse coding needed. **The higher the score, the more negative feeling about parenting**. 
+**The higher the score, the more positive feeling about parenting**. 
 
 ### Questionnaire #88: In general, I am a parent who...
 
@@ -177,11 +178,12 @@ Example question: a. Just kept your opinion to your self (Never to Very often)
 DS3[, c(550:553)] <- sim_impu(DS3[, c(550:553)], 9)
 DS3[, c(550, 551)] <- 5 - DS3[, c(550, 551)] #note, category 0 to 4
 DS3[, c(550:553)] <- sim_impu(DS3[, c(550:553)], 9, repl = T)
+DS3[, c(550:553)] <- 5 - DS3[, c(550:553)]  # reverse coding again 
 summary(DS3[, c(550:553)])
 ```
 Note: 33 rows in the data matrix above contain NaN vectors, that is, the entire row is NA.
 
-After reverse coding, **the higher the score, the more often the parent (aggressively) discusses issues with the child**.
+After reverse coding, **the higher the score, the less often the parent (aggressively) discusses issues with the child**.
 
 ### Questionnaire #91: Now we're going to list statements that deal with ways that you may perceive yourself. Indicate how often these statements apply to you. 
 
@@ -370,5 +372,6 @@ colnames(family_data[[2]]) <- c("D: Relationship with partners", "D: Argue with 
                    "D: Communation with children", "D: Argue with children", 
                    "D: Confidence about oneself")
 
-save(family_data, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") 
+#save(family_data, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") 
+save(family_data, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
 ```
