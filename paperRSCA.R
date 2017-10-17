@@ -44,7 +44,7 @@ summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 compone
 
 set.seed(111)
 results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
-summary(results_cv)
+summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
 plot(results_cv)
 
 set.seed(111)
@@ -168,13 +168,12 @@ results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
 plot(results_cvS)
 
 results_cvS$LassoRegion  #to see the proper region 
-summary(results_cvS)     #to see the recommended value
 
 set.seed(115)
 result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
                             Position = c(1, 2, 3, 4), 
-                            LASSO = 0.881476)
+                            LASSO = 0.881476) #here (0.8814760 + 0.9029754)/2 = 0.881476
 
 final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
                                    Phat = result_str$Pmatrix)
