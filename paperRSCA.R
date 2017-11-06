@@ -18,7 +18,7 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
+#install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
 
 ##############################################################
 ##### Empirical example
@@ -40,7 +40,7 @@ summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 compone
                                                 # variances in the 4th component. On the other hand, the 4th component cannot 
                                                 # be droped because the total variance of the 4th component is larger than 
                                                 # the 5th (the total variances of the components are from highest to lowest).
-                                                # Of course, like the scree plot of PCA, the number of R is sometimes subjectively chosen. 
+                                                # Of course, the number of R in this case is chosen rather subjectively. 
 
 set.seed(111)
 results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
