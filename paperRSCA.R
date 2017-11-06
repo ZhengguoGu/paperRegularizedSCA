@@ -12,8 +12,8 @@
 #         K.VanDeun@uvt.nl (Katrijn)
 #
 #
-#  NOTE: This R script was run on R version 3.3.0 on windows
-#        Latest update: July 4, 2017
+#  NOTE: This R script was run on R version 3.4.2 on windows
+#        Latest update: November 6, 2017
 #############################################################
 
 ### 0. install package
