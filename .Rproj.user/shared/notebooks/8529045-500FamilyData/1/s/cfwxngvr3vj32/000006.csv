@@ -1,0 +1,4 @@
+"0","DS3 = read.csv(""D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0003-Data.csv"", sep = "";"" )"
+"0","DS4 = read.csv(""D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata/04549-0004-Data.csv"", sep = "";"" )"
+"0","#DS3 = read.csv(""D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0003-Data.csv"", sep = "";"" ) #PC at home (synced with dropbox)"
+"0","#DS4 = read.csv(""D:/Dropbox/Tilburg office/Research SCA/Project 2 software Simultaneous/newdata/04549-0004-Data.csv"", sep = "";"" ) #PC at home (synced with dropbox)"
