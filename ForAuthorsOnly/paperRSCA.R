@@ -13,7 +13,7 @@
 #
 #
 #  NOTE: This R script was run on R version 3.4.2 on windows
-#        Latest update: November 6, 2017
+#        Latest update: TO BE ADDED
 #############################################################
 
 ### 0. install package
@@ -64,9 +64,9 @@ write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research S
 
 
 ############### SECTION: the RegularizedSCA package ##########################
-####### subsection: Exploring the component structure and functionalities
+####### subsection: Exploring the functionalities of RegularizedSCA
 ### 1. load the package and data
-library("RegularizedSCA")
+library(RegularizedSCA)
 names(Herring)  #one can check the names of the data file "Herring" 
 
 ### 2. pre-process the data
@@ -75,9 +75,43 @@ Sensory <- mySTD(Herring$Herring_Sensory)
 herring_data <- cbind(ChemPhy, Sensory)
 num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
 
+
+#### subsubsection: Model 2
 ### 3. VAF, PCA-GCA, and DISCO-SCA
 vaf <- VAF(DATA = herring_data, Jk = num_var, R = 10)
 summary(vaf)
+
+discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
+summary(discoresult)
+
+targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
+targetmatrix	
+
+maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
+
+set.seed(115)
+results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4, 
+                                Target = targetmatrix,
+                                Position = c(1, 2, 3, 4),
+                                LassoSequence = seq(from = 0.0000001, 
+                                                    to = 4.278383, 
+                                                    length.out = 200))
+plot(results_cvS)
+
+results_cvS$LassoRegion  #to see the proper region 
+
+set.seed(115)
+result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
+                            Target = targetmatrix,
+                            Position = c(1, 2, 3, 4), 
+                            LASSO = 0.881476) #here (0.8814760 + 0.9029754)/2 = 0.881476
+
+final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
+                                   Phat = result_str$Pmatrix)
+summary(final_comLoadingS)
+
+
+
 
 pca_gca(DATA = herring_data, Jk = num_var) 
        #note: pca_gca() contains a user-computer interaction phase, once
@@ -90,8 +124,7 @@ pca_gca(DATA = herring_data, Jk = num_var)
        #last block.
 
 
-discoresult <- DISCOsca(DATA = herring_data, R = 4, Jk = num_var)
-summary(discoresult)
+
 
 ### 4. cross-validation 
 set.seed(111)
