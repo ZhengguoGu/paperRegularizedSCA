@@ -25,8 +25,8 @@ install.packages("RegularizedSCA")
 #load data
 load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
 
-library("psych")
-library("RegularizedSCA")
+library(psych)
+library(RegularizedSCA)
 describe(family_data[[1]])  #mother
 describe(family_data[[2]])  #father
 describe(family_data[[3]])  #child
@@ -87,16 +87,16 @@ summary(discoresult)
 targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
 targetmatrix	
 
-maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
-
+maxLasso <- maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
 set.seed(115)
 results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4, 
                                 Target = targetmatrix,
                                 Position = c(1, 2, 3, 4),
                                 LassoSequence = seq(from = 0.0000001, 
-                                                    to = 4.278383, 
+                                                    to = maxLasso, 
                                                     length.out = 200))
 plot(results_cvS)
+
 
 results_cvS$LassoRegion  #to see the proper region 
 
@@ -104,29 +104,42 @@ set.seed(115)
 result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
                             Position = c(1, 2, 3, 4), 
-                            LASSO = 0.881476) #here (0.8814760 + 0.9029754)/2 = 0.881476
+                            LASSO = 0.8922256) #here (0.8814759 + 0.9029753)/2 = 0.8922256
 
 final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
                                    Phat = result_str$Pmatrix)
+
+
 summary(final_comLoadingS)
 
+### Now we draw a heatmap
+PmatS <- final_comLoadingS$Pmatrix
+keepname <- rownames(PmatS)
+colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
+write.csv(PmatS, file='sparseresultsStr.csv')
+
+library(ggplot2)
+names <- rownames(PmatS)
+component <- colnames(PmatS)
+PmatSVec <- c(PmatS)
+names <- rep(names, 4)
+component <- rep(component, each = 20)
+
+# note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
+# which is a website for drawing heatmap using ggplot2. 
+PmatS_dataframe <- data.frame(Loadings = PmatSVec, Variables = factor(names, ordered = T, levels = keepname), Components = component)
+
+p <- ggplot(PmatS_dataframe, aes(x = Components, y = Variables) )+
+  geom_tile(aes(fill = Loadings), colour = "white") +
+  scale_fill_gradient2(low="green", mid = "black", high = "red") 
+
+base_size <- 9
+p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
 
 
-
-pca_gca(DATA = herring_data, Jk = num_var) 
-       #note: pca_gca() contains a user-computer interaction phase, once
-       #we run pca_gca(DATA = herring_data, Jk = num_var), the console will 
-       #display the eigenvalues of block 1 and ask whether the user wants to 
-       #see the scree plot. If yes, then the user must enter 1; if No, enter 0.
-       #Then the program will also ask how many components to retain for this block
-       #and the user must give a number. 
-       #The aforementioned procedure will be repeated from the first block till the 
-       #last block.
-
-
-
-
-### 4. cross-validation 
+#### subsubsection: Model 4
 set.seed(111)
 results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
 plot(results_cv)
@@ -146,10 +159,9 @@ summary(final_results, disp = "full")
 
 # undo the shrinkage
 final_Loading <- undoShrinkage(herring_data, R = 4, 
-                                  Phat = final_results$Pmatrix)
+                               Phat = final_results$Pmatrix)
 
 summary(final_Loading)
-
 
 ### 5. Interpret the Pmatrix - Heatmap (Note that the following code is not in the article)
 # We draw a heatmap 
@@ -170,8 +182,8 @@ component <- rep(component, each = 20)
 Pmat_dataframe <- data.frame(Loadings = PmatVec, Variables = factor(names, ordered = T, levels = keepname), Components = component)
 
 p <- ggplot(Pmat_dataframe, aes(x = Components, y = Variables) )+
-     geom_tile(aes(fill = Loadings), colour = "white") +
-     scale_fill_gradient2(low="green", mid = "black", high = "red") 
+  geom_tile(aes(fill = Loadings), colour = "white") +
+  scale_fill_gradient2(low="green", mid = "black", high = "red") 
 
 base_size <- 9
 p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
@@ -181,42 +193,41 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
 ### 6. The T matrix or one can check summary(final_Loading) for T matrix
 final_Loading$Tmatrix
 
-####################################################################
 
-###### Subsection: Regularized with known structure
 
-# 1. cv_structuredSCA()
+#### subsubsection: Model 5
+
+
+pca_gca(DATA = herring_data, Jk = num_var, cor_min = .85) 
+       #note: pca_gca() contains a user-computer interaction phase, once
+       #we run pca_gca(DATA = herring_data, Jk = num_var), the console will 
+       #display the eigenvalues of block 1 and ask whether the user wants to 
+       #see the scree plot. If yes, then the user must enter 1; if No, enter 0.
+       #Then the program will also ask how many components to retain for this block
+       #and the user must give a number. 
+       #The aforementioned procedure will be repeated from the first block till the 
+       #last block.
+
+
 targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
 targetmatrix	
 
-maxLGlasso(DATA = herring_data, num_var, R = 4)$Lasso
-
-set.seed(115)
-results_cvS <- cv_structuredSCA(DATA = herring_data, Jk = num_var, R = 4, 
-                                Target = targetmatrix,
-                                Position = c(1, 2, 3, 4),
-                                LassoSequence = seq(from = 0.0000001, 
-                                                    to = 4.278383, 
-                                                    length.out = 200))
-plot(results_cvS)
-
-results_cvS$LassoRegion  #to see the proper region 
-
-set.seed(115)
-result_str <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
+set.seed(113)
+result_strModel5 <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
-                            Position = c(1, 2, 3, 4), 
-                            LASSO = 0.881476) #here (0.8814760 + 0.9029754)/2 = 0.881476
+                            LASSO = 0)
 
-final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4, 
-                                   Phat = result_str$Pmatrix)
-summary(final_comLoadingS)
+final_LoadingModel5 <- undoShrinkage(herring_data, R = 4, 
+                                  Phat = result_strModel5$Pmatrix)
+summary(final_LoadingModel5)
+
+
+
 
 ### again, we draw a heatmap
-PmatS <- final_comLoadingS$Pmatrix
+PmatS <- final_LoadingModel5$Pmatrix
 keepname <- rownames(PmatS)
 colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
-write.csv(PmatS, file='sparseresultsStr.csv')
 
 library(ggplot2)
 names <- rownames(PmatS)
