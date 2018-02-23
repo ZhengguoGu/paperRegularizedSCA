@@ -18,7 +18,7 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-#install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.0.tar.gz", repos = NULL)
+install.packages(pkgs="D://RegularizedSCA_0.5.2.tar.gz", repos = NULL)
 
 ##############################################################
 ##### Empirical example
@@ -70,8 +70,8 @@ library(RegularizedSCA)
 names(Herring)  #one can check the names of the data file "Herring" 
 
 ### 2. pre-process the data
-ChemPhy <- mySTD(Herring$Herring_ChemPhy)
-Sensory <- mySTD(Herring$Herring_Sensory)
+ChemPhy <- pre_process(Herring$Herring_ChemPhy)
+Sensory <- pre_process(Herring$Herring_Sensory)
 herring_data <- cbind(ChemPhy, Sensory)
 num_var <- cbind(dim(ChemPhy)[2], dim(Sensory)[2])
 
@@ -145,7 +145,7 @@ results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
 plot(results_cv)
 
 results_cv$Lasso_values
-results_cv$GLasso_values
+results_cv$Glasso_values
 summary(results_cv, disp = "full")
 summary(results_cv)  #to check the recommended tuning parameter values
 
