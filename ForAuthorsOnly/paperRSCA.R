@@ -19,7 +19,7 @@
 ### 0. install package
 install.packages("RegularizedSCA")
 install.packages(pkgs="D://RegularizedSCA_0.5.2.tar.gz", repos = NULL)
-
+install.packages(pkgs="C://Users//Zhengguo//Documents//RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
 ##############################################################
 ##### Empirical example
 #load data
@@ -140,22 +140,18 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
 
 
 #### subsubsection: Model 4
-set.seed(111)
+set.seed(115)
 results_cv <- cv_sparseSCA(DATA = herring_data, Jk = num_var, R = 4)
-plot(results_cv)
 
-results_cv$Lasso_values
-results_cv$Glasso_values
-summary(results_cv, disp = "full")
 summary(results_cv)  #to check the recommended tuning parameter values
+summary(results_cv, disp = "full")
+#plot(results_cv) #note that this plot is a heat plot for mean squared prediction errors.
 
-# the final model
-set.seed(111)
+# the final model 4
 final_results <- sparseSCA(herring_data, num_var, R = 4, 
-                           LASSO = 0.5281094, 
-                           GROUPLASSO = 1.028915, 
+                           LASSO = 1.503148, 
+                           GROUPLASSO = 0.3655355, 
                            NRSTART = 20)
-summary(final_results, disp = "full") 
 
 # undo the shrinkage
 final_Loading <- undoShrinkage(herring_data, R = 4, 
@@ -212,7 +208,7 @@ pca_gca(DATA = herring_data, Jk = num_var, cor_min = .85)
 targetmatrix <- matrix(c(1, 1, 1, 1, 1, 0, 0, 1), nrow = 2, ncol = 4)
 targetmatrix	
 
-set.seed(113)
+set.seed(115)
 result_strModel5 <- structuredSCA(DATA = herring_data, Jk = num_var, R = 4,
                             Target = targetmatrix,
                             LASSO = 0)
@@ -223,30 +219,5 @@ summary(final_LoadingModel5)
 
 
 
-
-### again, we draw a heatmap
-PmatS <- final_LoadingModel5$Pmatrix
-keepname <- rownames(PmatS)
-colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
-
-library(ggplot2)
-names <- rownames(PmatS)
-component <- colnames(PmatS)
-PmatSVec <- c(PmatS)
-names <- rep(names, 4)
-component <- rep(component, each = 20)
-
-# note that part of the ggplot code below is from https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
-# which is a website for drawing heatmap using ggplot2. 
-PmatS_dataframe <- data.frame(Loadings = PmatSVec, Variables = factor(names, ordered = T, levels = keepname), Components = component)
-
-p <- ggplot(PmatS_dataframe, aes(x = Components, y = Variables) )+
-  geom_tile(aes(fill = Loadings), colour = "white") +
-  scale_fill_gradient2(low="green", mid = "black", high = "red") 
-
-base_size <- 9
-p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
-  scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0))
 
 
