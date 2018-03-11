@@ -82,3 +82,23 @@ Sum_Divatt <- rowSums(DIVATT_Final)
 
 ECOGPT_IMP <- cbind(ECOGPT[, 1:9], MEMORY_Final, LANG_Final, VISSPAT_Final, PLAN_Final, ORGAN_Final, DIVATT_Final, Sum_Memory, Sum_Lang, Sum_Visspat, Sum_Plan, Sum_Organ, Sum_Divatt)
 write.csv(ECOGPT_IMP, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\ECOGPT_imp.csv")
+
+
+
+############################# process the merged data Final_merged.csv ############################
+
+Merged_D <- data.frame(read.csv(file="D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Final_merged.csv", 
+                    header=F, sep=",", stringsAsFactors=FALSE))
+
+# randomly pick 10 persons
+set.seed(1)
+index <- sample(1:295, 10)
+Merged_selected <- Merged_D[c(1,index), ]
+Merged_selected <- Merged_selected[c(-5, -7, -8, -9), ]  #Note that here I removed the subjects that contain missing values. Here, the missing values are because they are not measured. 
+                                                         #Of course we can do imputation, but I do not think it makes sense here. 
+# some genes are measured repeatedly. Here we keep the first measure. 
+index_toremove <- grepl("_", Merged_selected[1, 15:1140])
+index_number <- 15:1140
+index_number <- index_number[index_toremove] 
+Merged_selected_final <- Merged_selected[, -index_number]
+write.csv(Merged_selected_final, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Merged_selected_final.csv")
