@@ -116,6 +116,9 @@ which(rowSums(is.na(neuropsy_data)) != 12)
 neuropsy_data <- neuropsy_data[which(rowSums(is.na(neuropsy_data)) != 12), ]
 genes_data <- genes_data[which(rowSums(is.na(neuropsy_data)) != 12),]
 
+neuropsy_data <- neuropsy_data[c(-38, -110, -123), ]  #these three rows contain missing values coded as "-1"
+genes_data <- genes_data [c(-38, -110, -123), ]
+
 
 # some genes are measured repeatedly. Here we keep the first measure. 
 index_toremove <- grepl("_", genes_names)
@@ -127,4 +130,4 @@ colnames(genes_data) <- genes_names
  
 
 
-save(neuropsy_names, genes_names, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
+save(neuropsy_data, genes_data, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
