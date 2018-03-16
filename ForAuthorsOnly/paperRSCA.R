@@ -20,46 +20,6 @@
 install.packages("RegularizedSCA")
 install.packages(pkgs="D://RegularizedSCA_0.5.2.tar.gz", repos = NULL)
 install.packages(pkgs="C://Users//Zhengguo//Documents//RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
-##############################################################
-##### Empirical example
-#load data
-load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
-
-library(psych)
-library(RegularizedSCA)
-describe(family_data[[1]])  #mother
-describe(family_data[[2]])  #father
-describe(family_data[[3]])  #child
-
-data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
-num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
-
-#use VAF method
-summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 components because on the 5th component, the variance 
-                                                # of the second block is rather large (.104), which is even larger than all the 
-                                                # variances in the 4th component. On the other hand, the 4th component cannot 
-                                                # be droped because the total variance of the 4th component is larger than 
-                                                # the 5th (the total variances of the components are from highest to lowest).
-                                                # Of course, the number of R in this case is chosen rather subjectively. 
-
-set.seed(111)
-results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
-summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
-plot(results_cv)
-
-set.seed(111)
-final_results <- sparseSCA(data, num_var, R = 5, 
-                           LASSO = 2.82068, 
-                           GROUPLASSO = 1.28369, 
-                           NRSTART = 20)
-final_results$Pmatrix
-
-final_Loading <- undoShrinkage(data, R = 5, 
-                               final_results$Pmatrix)
-final_Loading$Pmatrix
-
-write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
-
 
 
 
@@ -218,6 +178,68 @@ final_LoadingModel5 <- undoShrinkage(herring_data, R = 4,
 summary(final_LoadingModel5)
 
 
+##############################################################
+##### Empirical example: 500 family data
+#load data
+load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
+
+library(psych)
+library(RegularizedSCA)
+describe(family_data[[1]])  #mother
+describe(family_data[[2]])  #father
+describe(family_data[[3]])  #child
+
+data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
+num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
+
+#use VAF method
+summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 components because on the 5th component, the variance 
+# of the second block is rather large (.104), which is even larger than all the 
+# variances in the 4th component. On the other hand, the 4th component cannot 
+# be droped because the total variance of the 4th component is larger than 
+# the 5th (the total variances of the components are from highest to lowest).
+# Of course, the number of R in this case is chosen rather subjectively. 
+
+set.seed(111)
+results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
+summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
+plot(results_cv)
+
+set.seed(111)
+final_results <- sparseSCA(data, num_var, R = 5, 
+                           LASSO = 2.82068, 
+                           GROUPLASSO = 1.28369, 
+                           NRSTART = 20)
+final_results$Pmatrix
+
+final_Loading <- undoShrinkage(data, R = 5, 
+                               final_results$Pmatrix)
+final_Loading$Pmatrix
+
+write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
 
 
+##############
+#### Empirical data: ADNI
+ADNI_data <- load("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
+neuropsy_block <- neuropsy_block[, -1]  #the first column is the subject identifier 
+genes_block <- genes_block[, -1] #the first column is the subject identifier
 
+data<- cbind(pre_process(neuropsy_block), pre_process(genes_block))
+num_var <- cbind(dim(neuropsy_block)[2], dim(genes_block)[2])
+
+summary(VAF(DATA = data, Jk = num_var, R = 12))
+
+set.seed(111)
+results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3)
+summary(results_ADNIcv) 
+
+final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
+                           LASSO = 0.05110997, 
+                           GROUPLASSO = 0.06061743, 
+                           NRSTART = 20)
+final_resultsADNI$Pmatrix
+
+final_Loading <- undoShrinkage(data, R = 3 , 
+                               final_resultsADNI$Pmatrix)
+final_Loading$Pmatrix

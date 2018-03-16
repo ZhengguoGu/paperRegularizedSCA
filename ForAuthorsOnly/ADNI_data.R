@@ -106,3 +106,8 @@ index_number <- index_number[index_toremove]
 Merged_selected_final <- Merged_selected[, -index_number]
 names(Merged_selected_final) <- Merged_selected_final[1, ]
 write.csv(Merged_selected_final[2:13,], file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Merged_selected_final.csv")
+
+Merged_selected_final <- Merged_selected_final[-1, ]
+neuropsy_block <- Merged_selected_final[, 1:13]
+genes_block <- Merged_selected_final[, 14:402]
+save(neuropsy_block, genes_block, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
