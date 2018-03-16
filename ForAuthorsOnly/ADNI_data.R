@@ -104,4 +104,5 @@ index_toremove <- grepl("_", Merged_selected[1, 15:1140])
 index_number <- 15:1140
 index_number <- index_number[index_toremove] 
 Merged_selected_final <- Merged_selected[, -index_number]
-write.csv(Merged_selected_final, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Merged_selected_final.csv")
+names(Merged_selected_final) <- Merged_selected_final[1, ]
+write.csv(Merged_selected_final[2:13,], file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Merged_selected_final.csv")
