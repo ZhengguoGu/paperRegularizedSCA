@@ -94,20 +94,37 @@ Merged_D <- data.frame(read.csv(file="D:\\Dropbox\\Dropbox\\tilburg office\\Rese
                                 header=F, sep=",", stringsAsFactors=FALSE))  #laptop office.
 
 # randomly pick 20 persons 
-set.seed(112)
-index <- sample(2:296, 20)
-Merged_selected <- Merged_D[c(1,index), ]
-Merged_selected <- Merged_selected[c(-3, -4, -5, -9, -14, -16, -17, -20), ]  #Note that here I removed the subjects that contain missing values. Here, the missing values are because they are not measured. 
+#set.seed(112)
+#index <- sample(2:296, 20)
+#Merged_selected <- Merged_D[c(1,index), ]
+#Merged_selected <- Merged_selected[c(-3, -4, -5, -9, -14, -16, -17, -20), ]  #Note that here I removed the subjects that contain missing values. Here, the missing values are because they are not measured. 
                                                          #Of course we can do imputation, but I do not think it makes sense here. 
-# some genes are measured repeatedly. Here we keep the first measure. 
-index_toremove <- grepl("_", Merged_selected[1, 15:1140])
-index_number <- 15:1140
-index_number <- index_number[index_toremove] 
-Merged_selected_final <- Merged_selected[, -index_number]
-names(Merged_selected_final) <- Merged_selected_final[1, ]
-write.csv(Merged_selected_final[2:13,], file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\Merged_selected_final.csv")
+neuropsy <- Merged_D[, 2:13] #the first column is left out, since its subject ID
+genes <- Merged_D[, 15:1140] #the first column is left out, since its subject ID
 
-Merged_selected_final <- Merged_selected_final[-1, ]
-neuropsy_block <- Merged_selected_final[, 1:13]
-genes_block <- Merged_selected_final[, 14:402]
-save(neuropsy_block, genes_block, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
+neuropsy_names <- neuropsy[1, ]
+neuropsy_data <- data.matrix(neuropsy[2:296, ])
+genes_names <- genes[1, ] 
+genes_data <- data.matrix(genes[2:296, ])
+
+library(psych)
+describe(neuropsy_data) 
+# we remove the NA entries in columns V2 - V7
+# we remove the -1 entries (missing value) in V8 - V13
+table(rowSums(is.na(neuropsy_data))) # 117 enties contain NA's for the entire 12 questions, remove them.
+which(rowSums(is.na(neuropsy_data)) != 12)
+neuropsy_data <- neuropsy_data[which(rowSums(is.na(neuropsy_data)) != 12), ]
+genes_data <- genes_data[which(rowSums(is.na(neuropsy_data)) != 12),]
+
+
+# some genes are measured repeatedly. Here we keep the first measure. 
+index_toremove <- grepl("_", genes_names)
+genes_names <- genes_names[!index_toremove]
+genes_data <- genes_data[, !index_toremove]
+
+colnames(neuropsy_data) <-  neuropsy_names
+colnames(genes_data) <- genes_names
+ 
+
+
+save(neuropsy_names, genes_names, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
