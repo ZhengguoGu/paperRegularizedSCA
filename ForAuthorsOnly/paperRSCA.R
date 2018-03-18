@@ -221,25 +221,29 @@ write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research S
 
 ##############
 #### Empirical data: ADNI
-ADNI_data <- load("D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
-neuropsy_block <- neuropsy_block[, -1]  #the first column is the subject identifier 
-genes_block <- genes_block[, -1] #the first column is the subject identifier
+ADNI_data <- load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
 
-data<- cbind(pre_process(neuropsy_block), pre_process(genes_block))
-num_var <- cbind(dim(neuropsy_block)[2], dim(genes_block)[2])
+data<- cbind(pre_process(neuropsy_data), pre_process(genes_data))
+num_var <- cbind(dim(neuropsy_data)[2], dim(genes_data)[2])
 
-summary(VAF(DATA = data, Jk = num_var, R = 12))
+to_saveVAF <- summary(VAF(DATA = data, Jk = num_var, R = 12))
+
 
 set.seed(111)
-results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3)
+maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
+
+results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, 11.13072, length.out = 50), 
+                               GLassoSequence = seq(0.00001, 0.881457, length.out = 20), NRSTARTS = 1)
 summary(results_ADNIcv) 
 
 final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
-                           LASSO = 0.05110997, 
-                           GROUPLASSO = 0.06061743, 
+                           LASSO = 0.908722, 
+                           GROUPLASSO = 0.2783617, 
                            NRSTART = 20)
 final_resultsADNI$Pmatrix
 
-final_Loading <- undoShrinkage(data, R = 3 , 
+final_Loading <- undoShrinkage(data, R = 3, 
                                final_resultsADNI$Pmatrix)
-final_Loading$Pmatrix
+to_save <- final_Loading$Pmatrix
+
+save(to_save, to_saveVAF, file = "3componentsNeuropsyData.RData")

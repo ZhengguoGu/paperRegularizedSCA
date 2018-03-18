@@ -116,8 +116,9 @@ which(rowSums(is.na(neuropsy_data)) != 12)
 neuropsy_data <- neuropsy_data[which(rowSums(is.na(neuropsy_data)) != 12), ]
 genes_data <- genes_data[which(rowSums(is.na(neuropsy_data)) != 12),]
 
-neuropsy_data <- neuropsy_data[c(-38, -110, -123), ]  #these three rows contain missing values coded as "-1"
-genes_data <- genes_data [c(-38, -110, -123), ]
+minus_index <- neuropsy_data[, 12] != -1 #a few rows contain missing values coded as "-1"
+neuropsy_data <- neuropsy_data[minus_index, ]  
+genes_data <- genes_data [minus_index, ]
 
 
 # some genes are measured repeatedly. Here we keep the first measure. 
