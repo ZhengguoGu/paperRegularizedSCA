@@ -18,7 +18,7 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-install.packages(pkgs="D://RegularizedSCA_0.5.2.tar.gz", repos = NULL)
+install.packages(pkgs="D://RegularizedSCA_0.5.3.tar.gz", repos = NULL)
 install.packages(pkgs="C://Users//Zhengguo//Documents//RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
 
 
@@ -223,11 +223,11 @@ write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research S
 #### Empirical data: ADNI
 ADNI_data <- load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
 
-data<- cbind(pre_process(neuropsy_data), pre_process(genes_data))
-num_var <- cbind(dim(neuropsy_data)[2], dim(genes_data)[2])
+data<- cbind(pre_process(neuropsy_data[,1:6], weight = T), pre_process(genes_data, weight = T))
+num_var <- cbind(dim(neuropsy_data[,1:6])[2], dim(genes_data)[2])
 
-to_saveVAF <- summary(VAF(DATA = data, Jk = num_var, R = 12))
-
+summary(VAF(DATA = data, Jk = num_var, R = 12))
+summary(DISCOsca(data, 2, num_var))
 
 set.seed(111)
 maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
