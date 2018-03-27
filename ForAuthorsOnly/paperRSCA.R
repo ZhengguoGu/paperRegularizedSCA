@@ -223,27 +223,40 @@ write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research S
 #### Empirical data: ADNI
 ADNI_data <- load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
 
-data<- cbind(pre_process(neuropsy_data[,1:6], weight = T), pre_process(genes_data, weight = T))
-num_var <- cbind(dim(neuropsy_data[,1:6])[2], dim(genes_data)[2])
+data<- cbind(pre_process(neuropsy_data, weight = T), pre_process(genes_data, weight = T))
+num_var <- cbind(dim(neuropsy_data)[2], dim(genes_data)[2])
 
 summary(VAF(DATA = data, Jk = num_var, R = 12))
-summary(DISCOsca(data, 2, num_var))
+
 
 set.seed(111)
 maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
 
-results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, 11.13072, length.out = 50), 
-                               GLassoSequence = seq(0.00001, 0.881457, length.out = 20), NRSTARTS = 1)
+results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, maxLGasso$Lasso, length.out = 50), 
+                               GLassoSequence = seq(0.00001, maxLGasso$Glasso, length.out = 20), NRSTARTS = 1)
 summary(results_ADNIcv) 
 
 final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
-                           LASSO = 0.908722, 
-                           GROUPLASSO = 0.2783617, 
+                           LASSO = 0.1257974, 
+                           GROUPLASSO = 0.00001, 
                            NRSTART = 20)
 final_resultsADNI$Pmatrix
 
 final_Loading <- undoShrinkage(data, R = 3, 
                                final_resultsADNI$Pmatrix)
-to_save <- final_Loading$Pmatrix
+final_Loading$Pmatrix
+P_m <- final_Loading$Pmatrix
+colnames(P_m) <- c("Component 1", "Component 2", "Component 3")
+P_m
+# heatmap
 
-save(to_save, to_saveVAF, file = "3componentsNeuropsyData.RData")
+library(lattice)
+P_m <- final_Loading$Pmatrix
+colnames(P_m) <- c("C1", "C2", "C3")
+
+if (!require("RColorBrewer")) {
+  install.packages("RColorBrewer", dependencies = TRUE)
+  library(RColorBrewer)
+}
+heatmap(P_m,
+        Rowv=NA, Colv=NA, col=rev(brewer.pal(9,"RdBu")))
