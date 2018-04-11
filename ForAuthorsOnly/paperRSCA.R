@@ -19,7 +19,7 @@
 ### 0. install package
 install.packages("RegularizedSCA")
 install.packages(pkgs="D://RegularizedSCA_0.5.3.tar.gz", repos = NULL)
-install.packages(pkgs="C://Users//Zhengguo//Documents//RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
+install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
 
 
 
@@ -72,11 +72,11 @@ final_comLoadingS <- undoShrinkage(DATA = herring_data, R = 4,
 
 summary(final_comLoadingS)
 
-### Now we draw a heatmap
+### Now we draw a heatmap; not included in the package
 PmatS <- final_comLoadingS$Pmatrix
 keepname <- rownames(PmatS)
 colnames(PmatS) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
-write.csv(PmatS, file='sparseresultsStr.csv')
+
 
 library(ggplot2)
 names <- rownames(PmatS)
@@ -108,6 +108,7 @@ summary(results_cv, disp = "full")
 #plot(results_cv) #note that this plot is a heat plot for mean squared prediction errors.
 
 # the final model 4
+set.seed(115)
 final_results <- sparseSCA(herring_data, num_var, R = 4, 
                            LASSO = 1.503148, 
                            GROUPLASSO = 0.3655355, 
@@ -124,7 +125,6 @@ summary(final_Loading)
 Pmat <- final_Loading$Pmatrix
 keepname <- rownames(Pmat)
 colnames(Pmat) <- c('Component 1', 'Component 2', 'Component 3', 'Component 4')
-write.csv(Pmat, file='sparseresults.csv')
 
 library(ggplot2)
 names <- rownames(Pmat)
@@ -154,7 +154,7 @@ final_Loading$Tmatrix
 #### subsubsection: Model 5
 
 
-pca_gca(DATA = herring_data, Jk = num_var, cor_min = .85) 
+pca_gca(DATA = herring_data, Jk = num_var) 
        #note: pca_gca() contains a user-computer interaction phase, once
        #we run pca_gca(DATA = herring_data, Jk = num_var), the console will 
        #display the eigenvalues of block 1 and ask whether the user wants to 
@@ -189,7 +189,7 @@ describe(family_data[[1]])  #mother
 describe(family_data[[2]])  #father
 describe(family_data[[3]])  #child
 
-data<- cbind(mySTD(family_data[[1]]), mySTD(family_data[[2]]), mySTD(family_data[[3]]))
+data<- cbind(pre_process(family_data[[1]]), pre_process(family_data[[2]]), pre_process(family_data[[3]]))
 num_var <- cbind(dim(family_data[[1]])[2], dim(family_data[[2]])[2], dim(family_data[[3]])[2])
 
 #use VAF method
@@ -200,15 +200,17 @@ summary(VAF(DATA = data, Jk = num_var, R = 10)) # note: here we choose 5 compone
 # the 5th (the total variances of the components are from highest to lowest).
 # Of course, the number of R in this case is chosen rather subjectively. 
 
-set.seed(111)
-results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5)
-summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
-plot(results_cv)
+set.seed(115)
 
-set.seed(111)
+maxLasso <- maxLGlasso(DATA = data, num_var, R = 5)
+results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5, LassoSequence = seq(0.000001, maxLasso$Lasso, length.out = 50),
+                           GLassoSequence = seq(0.000001, maxLasso$Glasso, length.out = 20), NRSTARTS = 1)
+summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
+
+set.seed(115)
 final_results <- sparseSCA(data, num_var, R = 5, 
-                           LASSO = 2.82068, 
-                           GROUPLASSO = 1.28369, 
+                           LASSO = 3.393532, 
+                           GROUPLASSO = 0.6080645, 
                            NRSTART = 20)
 final_results$Pmatrix
 
