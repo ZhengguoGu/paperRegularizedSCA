@@ -204,13 +204,15 @@ set.seed(115)
 
 maxLasso <- maxLGlasso(DATA = data, num_var, R = 5)
 results_cv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 5, LassoSequence = seq(0.000001, maxLasso$Lasso, length.out = 50),
-                           GLassoSequence = seq(0.000001, maxLasso$Glasso, length.out = 20), NRSTARTS = 1)
+                           GLassoSequence = seq(0.000001, maxLasso$Glasso, length.out = 10), NRSTARTS = 1) # Note: here we checked 10 Group Lasso parameter values,
+                                                                                                           # and let NRSTARTS = 1, this is not ideal. I
+
 summary(results_cv)  # the recommended tuning parameters. call summary(results_cv, disp = "estimatedPT") to see the estimated P and T matrix 
 
 set.seed(115)
 final_results <- sparseSCA(data, num_var, R = 5, 
                            LASSO = 3.393532, 
-                           GROUPLASSO = 0.6080645, 
+                           GROUPLASSO = 0.4278975, 
                            NRSTART = 20)
 final_results$Pmatrix
 
@@ -231,11 +233,11 @@ num_var <- cbind(dim(neuropsy_data)[2], dim(genes_data)[2])
 summary(VAF(DATA = data, Jk = num_var, R = 12))
 
 
-set.seed(111)
+set.seed(115)
 maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
 
 results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, maxLGasso$Lasso, length.out = 50), 
-                               GLassoSequence = seq(0.00001, maxLGasso$Glasso, length.out = 20), NRSTARTS = 1)
+                               GLassoSequence = seq(0.00001, maxLGasso$Glasso, length.out = 10), NRSTARTS = 1)
 summary(results_ADNIcv) 
 
 final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
