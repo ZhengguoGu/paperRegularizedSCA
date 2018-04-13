@@ -18,9 +18,6 @@
 
 ### 0. install package
 install.packages("RegularizedSCA")
-install.packages(pkgs="D://RegularizedSCA_0.5.3.tar.gz", repos = NULL)
-install.packages(pkgs="C:/Users/Zhengguo/Documents/RegularizedSCA_0.5.3.tar.gz", repos = NULL)  #pc at home
-
 
 
 ############### SECTION: the RegularizedSCA package ##########################
@@ -211,7 +208,7 @@ summary(results_cv)  # the recommended tuning parameters. call summary(results_c
 
 set.seed(115)
 final_results <- sparseSCA(data, num_var, R = 5, 
-                           LASSO = 3.393532, 
+                           LASSO = 3.732885, 
                            GROUPLASSO = 0.4278975, 
                            NRSTART = 20)
 final_results$Pmatrix
@@ -220,7 +217,7 @@ final_Loading <- undoShrinkage(data, R = 5,
                                final_results$Pmatrix)
 final_Loading$Pmatrix
 
-write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
+write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
 
 
 ##############
