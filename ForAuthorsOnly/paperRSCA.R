@@ -217,7 +217,7 @@ final_Loading <- undoShrinkage(data, R = 5,
                                final_results$Pmatrix)
 final_Loading$Pmatrix
 
-write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
+write.csv(final_Loading$Pmatrix, file = "D:\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\empiricalP.csv")
 
 
 ##############
@@ -235,8 +235,9 @@ maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
 
 results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, maxLGasso$Lasso, length.out = 50), 
                                GLassoSequence = seq(0.00001, maxLGasso$Glasso, length.out = 10), NRSTARTS = 1)
-summary(results_ADNIcv) 
+summary(results_ADNIcv)
 
+set.seed(115)
 final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
                            LASSO = 0.1257974, 
                            GROUPLASSO = 0.00001, 
@@ -246,18 +247,4 @@ final_resultsADNI$Pmatrix
 final_Loading <- undoShrinkage(data, R = 3, 
                                final_resultsADNI$Pmatrix)
 final_Loading$Pmatrix
-P_m <- final_Loading$Pmatrix
-colnames(P_m) <- c("Component 1", "Component 2", "Component 3")
-P_m
-# heatmap
 
-library(lattice)
-P_m <- final_Loading$Pmatrix
-colnames(P_m) <- c("C1", "C2", "C3")
-
-if (!require("RColorBrewer")) {
-  install.packages("RColorBrewer", dependencies = TRUE)
-  library(RColorBrewer)
-}
-heatmap(P_m,
-        Rowv=NA, Colv=NA, col=rev(brewer.pal(9,"RdBu")))
