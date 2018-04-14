@@ -247,4 +247,5 @@ final_resultsADNI$Pmatrix
 final_Loading <- undoShrinkage(data, R = 3, 
                                final_resultsADNI$Pmatrix)
 final_Loading$Pmatrix
+write.csv(final_Loading$Pmatrix[1:24, ], file = "D:\\Dropbox\\tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\empiricalP.csv")
 
