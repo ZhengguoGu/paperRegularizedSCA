@@ -1,7 +1,0 @@
-Dear Reviewers, 
-
-The supplementary material includes
--	Family_data.RData, which is the empirical data. 
--	paperRSCA.R, which contains the code for Section “An empirical example” and Section “The RegularizedSCA package”
--	RegularizedSCA_0.5.0.tar.gz, which is the source code for the package. Alternatively, one may download the R package directly from CRAN. 
-
