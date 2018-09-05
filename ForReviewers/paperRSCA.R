@@ -16,7 +16,7 @@
 #############################################################
 
 ### 0. install package
-install.packages("RegularizedSCA")  # the latest version 0.5.3.
+install.packages("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\BehavioralRM\\2 round major R\\to_submit\\RegularizedSCA_0.5.3.zip",repos = NULL, type="source")  # the latest version 0.5.3.
 
 
 ############### SECTION: the RegularizedSCA package ##########################
@@ -172,8 +172,8 @@ summary(final_LoadingModel5)
 
 ##############################################################
 ##### Empirical example: 500 family data
-#load data
-load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\family_data.RData") #pc at home
+#load data family_data.RData
+
 
 library(psych)
 library(RegularizedSCA)
@@ -212,31 +212,4 @@ final_Loading <- undoShrinkage(data, R = 5,
 final_Loading$Pmatrix
 
 
-##############
-#### Empirical data: ADNI
-ADNI_data <- load("D:\\Dropbox\\Tilburg office\\Research SCA\\Project 2 software Simultaneous\\newdata\\ADNI\\DataUsedforPaper\\merge data\\ADNI_final.RData")
-
-data<- cbind(pre_process(neuropsy_data, weight = T), pre_process(genes_data, weight = T))
-num_var <- cbind(dim(neuropsy_data)[2], dim(genes_data)[2])
-
-summary(VAF(DATA = data, Jk = num_var, R = 12))
-
-
-set.seed(115)
-maxLGasso <- maxLGlasso(DATA = data, num_var, R = 3)
-
-results_ADNIcv <- cv_sparseSCA(DATA = data, Jk = num_var, R = 3, LassoSequence = seq(0.0001, maxLGasso$Lasso, length.out = 50), 
-                               GLassoSequence = seq(0.00001, maxLGasso$Glasso, length.out = 10), NRSTARTS = 1)
-summary(results_ADNIcv)
-
-set.seed(115)
-final_resultsADNI <- sparseSCA(data, num_var, R = 3, 
-                           LASSO = 0.1257974, 
-                           GROUPLASSO = 0.00001, 
-                           NRSTART = 20)
-final_resultsADNI$Pmatrix
-
-final_Loading <- undoShrinkage(data, R = 3, 
-                               final_resultsADNI$Pmatrix)
-final_Loading$Pmatrix
 
