@@ -11,8 +11,8 @@
 #         K.VanDeun@uvt.nl (Katrijn)
 #
 #
-#  NOTE: This R script was run on R version 3.4.2 on windows
-#       
+#  NOTE: This R script was run on R version 3.5.0 on windows
+#        RegularizedSCA version 0.5.3
 #############################################################
 
 ### 0. install package
