@@ -2,9 +2,9 @@
 title: "The 500 Family Study data"
 author: Zhengguo Gu
 output:
-  html_document: default
-  html_notebook: default
   pdf_document: default
+  html_notebook: default
+  html_document: default
 ---
 The original raw data -- "500 Family Study" data -- is publicly available at http://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/4549?searchSource=revise&q=500+family+study. To obtain the data used in this article, follow the following steps:
 
