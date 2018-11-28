@@ -94,6 +94,16 @@ p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
 
+#### the lines below were added because the publisher wanted a clear figure  ####
+p + theme(axis.text.x = element_text(size=12, color = "black"),
+          axis.text.y = element_text(size = 12, color = "black"),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank(),
+          legend.title = element_text(colour="black", size=12),
+          legend.text = element_text(colour="black", size=12))
+#### the lines above were added because the publisher wanted a clear figure  ####
 
 #### subsubsection: Model 4
 set.seed(115)
@@ -141,6 +151,17 @@ base_size <- 9
 p + theme_grey(base_size = base_size) + labs(x = "", y = "") +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
+
+#### the lines below were added because the publisher wanted a clear figure  ####
+p + theme(axis.text.x = element_text(size=12, color = "black"),
+          axis.text.y = element_text(size = 12, color = "black"),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank(),
+          legend.title = element_text(colour="black", size=12),
+          legend.text = element_text(colour="black", size=12))
+#### the lines above were added because the publisher wanted a clear figure  ####
 
 
 #### subsubsection: Model 5
